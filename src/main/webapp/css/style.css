@@ -1,0 +1,62 @@
+@charset "UTF-8";
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    background-color: #e0e0e0;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.navbar li {
+    margin: 0 10px;
+}
+
+.navbar li a {
+    color: black;
+    text-decoration: none;
+}
+.container {
+    display: flex;              /* 가로 정렬을 위해 flex 사용 */
+    justify-content: center;    /* 가운데 정렬 */
+    align-items: center;        /* 수직 가운데 정렬 */
+    margin-top: 50px;
+    text-align: left;           /* 검색 박스 내 텍스트 왼쪽 정렬 */
+}
+
+.character-icon {
+    margin-right: 20px;         /* 이미지와 검색 박스 사이 간격 */
+}
+
+.character-icon img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
+.search-box input[type="text"] {
+    padding: 10px;
+    width: 300px;
+    border: 2px solid #000;
+    border-radius: 5px;
+}
+
+.search-box button {
+    padding: 10px 20px;
+    margin: 5px;
+    background-color: #fff3cd;
+    border: 1px solid #000;
+    border-radius: 5px;
+    cursor: pointer;
+}
