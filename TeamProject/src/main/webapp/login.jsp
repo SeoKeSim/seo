@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>로그인 페이지</title>
     <link rel="stylesheet" type="text/css" href="css/login.css">
+    
 </head>
 <body>
     <div class="login-page">
@@ -24,7 +25,7 @@
                         <input type="password" id="password" name="password" placeholder="비밀번호" required>
                     </div>
                     <div class="form-footer">
-                        <a href="../Signup/signup.jsp">회원가입</a>
+                        <a href="signup.jsp">회원가입</a>
                         <button type="submit">로그인</button>
                     </div>
                 </form>
