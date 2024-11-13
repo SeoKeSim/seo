@@ -4,7 +4,7 @@
 <head>
     <title>스펙 확인하기!</title>
     <link rel="stylesheet" href="css/char_info.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/headermain.css">
 </head>
 <body>
 	<%@include file="module/headermain.jsp" %>
