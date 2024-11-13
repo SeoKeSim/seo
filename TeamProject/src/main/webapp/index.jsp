@@ -18,7 +18,7 @@
         <div class="search-box">
             <input type="text" placeholder="캐릭터 이름 검색">
             <form action="char_info.jsp" method="post">
-                <button>검색하기</button>
+                <button>검색하기qweqwewqewqewqewqewqee</button>
             </form>
         </div>
     </div> <!-- end container -->
