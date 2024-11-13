@@ -29,7 +29,6 @@
                         <input type="email" id="email" name="email" placeholder="이메일" required>
                     </div>
                     <div class="form-footer">
-                        <a href="../Login/login.jsp">로그인</a>
                         <button type="submit">회원가입</button>
                     </div>
                 </form>

@@ -24,7 +24,7 @@
                         <input type="password" id="password" name="password" placeholder="비밀번호" required>
                     </div>
                     <div class="form-footer">
-                        <a href="../Signup/signup.jsp">회원가입</a>
+                        <a href="signup.jsp">회원가입</a>
                         <button type="submit">로그인</button>
                     </div>
                 </form>
