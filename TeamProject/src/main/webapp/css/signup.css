@@ -1,0 +1,114 @@
+/* 전체 페이지 스타일 */
+.signup-page {
+    width: 100%;
+    height: 100vh;  /* 화면 전체 높이 */
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    background-color: #f39c12; /* 주황색 배경 */
+}
+
+/* 로고 부분 */
+.logo-section {
+    width: 40%;
+    background-color: #f39c12;  /* 주황색 배경 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+/* 메이플스토리 텍스트 스타일 (게임스러운 느낌) */
+.logo-section p:first-of-type {
+    font-size: 40px;  /* 글씨 크기 줄임 */
+    font-family: 'Press Start 2P', cursive;  /* 레트로 스타일 폰트 */
+    color: #fff;  /* 흰색 */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 255, 255, 0.6); /* 텍스트에 빛나는 효과 */
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* MapleStory 텍스트 (게임스러운 스타일) */
+.logo-section p:last-of-type {
+    font-size: 20px;  /* 글씨 크기 줄임 */
+    font-family: 'Press Start 2P', cursive;  /* 레트로 스타일 폰트 */
+    color: #000;  /* 검정색 글씨 */
+    margin-top: 10px;
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 255, 255, 0.6); /* 빛나는 효과 */
+    text-transform: capitalize;  /* 첫 글자만 대문자 */
+}
+
+/* 폼 부분 (아이디, 비밀번호, 로그인 버튼 등을 중앙에 배치) */
+.form-section {
+    width: 60%;
+    padding: 40px;
+    background-color: #f1c40f;  /* 노란색 배경 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 10px;
+}
+
+/* 입력창 스타일 */
+.input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    background-color: #f1c40f;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+/* 입력창 텍스트 스타일 */
+input[type="text"], input[type="password"], input[type="email"] {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f8f8f8;
+}
+
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus {
+    background-color: #ecf0f1;
+    border-color: #3498db;
+}
+
+/* 버튼 스타일 */
+button {
+    padding: 12px 30px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+    transform: scale(1.1);
+}
+
+/* 폼 하단 링크 스타일 */
+.form-footer {
+    margin-top: 20px;
+}
+
+.form-footer a {
+    color: #000;  /* 검정색으로 변경 */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
