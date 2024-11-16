@@ -17,13 +17,19 @@ public class CharacterSearchServlet extends HttpServlet {
     private static final String API_KEY = "test_43e98710a8effa6ca0f7323e240a0f3b61b6ea5a35ef83a972a59e22136864feefe8d04e6d233bd35cf2fabdeb93fb0d";
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, java.io.IOException {
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().println("<!DOCTYPE html>");
         response.getWriter().println("<html>");
-        response.getWriter().println("<head><title>메이플스토리 캐릭터 검색</title></head>");
+        response.getWriter().println("<head>");
+        response.getWriter().println("<title>메이플스토리 캐릭터 검색</title>");
+        response.getWriter().println("<style>");
+        response.getWriter().println(".character-info { margin: 20px; padding: 20px; border: 1px solid #ddd; }");
+        response.getWriter().println(".character-image { margin: 20px 0; }");
+        response.getWriter().println("</style>");
+        response.getWriter().println("</head>");
         response.getWriter().println("<body>");
         response.getWriter().println("<h2>메이플스토리 캐릭터 검색</h2>");
         response.getWriter().println("<form action='CharacterSearchServlet' method='post'>");
@@ -31,7 +37,48 @@ public class CharacterSearchServlet extends HttpServlet {
         response.getWriter().println("<input type='submit' value='검색'>");
         response.getWriter().println("</form>");
         response.getWriter().println("</body></html>");
-	} 
+    }
+
+    private String getCharacterOcid(String characterName) throws Exception {
+        String encodedCharacterName = URLEncoder.encode(characterName, "UTF-8").replace("+", "%20");
+        String apiUrl = "https://open.api.nexon.com/maplestory/v1/id?character_name=" + encodedCharacterName;
+        
+        URL url = new URL(apiUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("x-nxopen-api-key", API_KEY);
+        connection.setRequestProperty("accept", "application/json");
+        
+        int responseCode = connection.getResponseCode();
+        if (responseCode == 200) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = in.readLine();
+            in.close();
+            
+            // 간단한 문자열 파싱
+            return response.split("\"ocid\":\"")[1].split("\"")[0];
+        }
+        return null;
+    }
+
+    private String getCharacterInfo(String ocid) throws Exception {
+        String apiUrl = "https://open.api.nexon.com/maplestory/v1/character/basic?ocid=" + ocid;
+        
+        URL url = new URL(apiUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("x-nxopen-api-key", API_KEY);
+        connection.setRequestProperty("accept", "application/json");
+        
+        int responseCode = connection.getResponseCode();
+        if (responseCode == 200) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = in.readLine();
+            in.close();
+            return response;
+        }
+        return null;
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -44,57 +91,38 @@ public class CharacterSearchServlet extends HttpServlet {
 
         response.getWriter().println("<!DOCTYPE html>");
         response.getWriter().println("<html>");
-        response.getWriter().println("<head><title>검색 결과</title></head>");
+        response.getWriter().println("<head>");
+        response.getWriter().println("<title>검색 결과</title>");
+        response.getWriter().println("<style>");
+        response.getWriter().println(".character-info { margin: 20px; padding: 20px; border: 1px solid #ddd; }");
+        response.getWriter().println(".character-image { margin: 20px 0; }");
+        response.getWriter().println("</style>");
+        response.getWriter().println("</head>");
         response.getWriter().println("<body>");
 
         if (characterName != null && !characterName.isEmpty()) {
             try {
-                // URL 인코딩 처리
-                String encodedCharacterName = URLEncoder.encode(characterName, "UTF-8").replace("+", "%20");
-                // 엔드포인트를 /id로 변경
-                String apiUrl = "https://open.api.nexon.com/maplestory/v1/id?character_name=" + encodedCharacterName;
-
-                URL url = new URL(apiUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                
-                connection.setRequestMethod("GET");
-                connection.setRequestProperty("x-nxopen-api-key", API_KEY);
-                connection.setRequestProperty("accept", "application/json");
-                
-                int responseCode = connection.getResponseCode();
-                
-                if (responseCode == 200) {
-                    BufferedReader in = new BufferedReader(
-                            new InputStreamReader(connection.getInputStream(), "UTF-8"));
-                    String inputLine;
-                    StringBuilder apiResponse = new StringBuilder();
-                    
-                    while ((inputLine = in.readLine()) != null) {
-                        apiResponse.append(inputLine);
+                String ocid = getCharacterOcid(characterName);
+                if (ocid != null) {
+                    String characterInfo = getCharacterInfo(ocid);
+                    if (characterInfo != null) {
+                        // 응답 데이터 출력
+                        response.getWriter().println("<div class='character-info'>");
+                        response.getWriter().println("<h2>캐릭터 정보</h2>");
+                        response.getWriter().println("<pre>" + characterInfo + "</pre>");
+                        
+                        // 이미지 URL 추출 및 표시
+                        if (characterInfo.contains("character_image")) {
+                            String imageUrl = characterInfo.split("\"character_image\":\"")[1].split("\"")[0];
+                            response.getWriter().println("<div class='character-image'>");
+                            response.getWriter().println("<h3>캐릭터 이미지</h3>");
+                            response.getWriter().println("<img src='" + imageUrl + "' alt='캐릭터 이미지'>");
+                            response.getWriter().println("</div>");
+                        }
+                        
+                        response.getWriter().println("</div>");
                     }
-                    in.close();
-
-                    response.getWriter().println("<h2>캐릭터 검색 결과</h2>");
-                    response.getWriter().println("<pre>" + apiResponse.toString() + "</pre>");
-                    
-                } else {
-                    // 에러 처리
-                    BufferedReader err = new BufferedReader(
-                            new InputStreamReader(connection.getErrorStream(), "UTF-8"));
-                    String errorLine;
-                    StringBuilder errorResponse = new StringBuilder();
-                    
-                    while ((errorLine = err.readLine()) != null) {
-                        errorResponse.append(errorLine);
-                    }
-                    err.close();
-
-                    response.getWriter().println("<h2>에러 발생 (" + responseCode + ")</h2>");
-                    response.getWriter().println("<pre>" + errorResponse.toString() + "</pre>");
                 }
-                
-                connection.disconnect();
-                
             } catch (Exception e) {
                 response.getWriter().println("<h2>예외 발생</h2>");
                 response.getWriter().println("<pre>" + e.getMessage() + "</pre>");
