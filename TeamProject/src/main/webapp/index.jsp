@@ -10,18 +10,21 @@
 </head>
 <body>
 
-    <%@include file="module/headermain.jsp" %>
+    <%@include file="module/headermain.jsp" %> <!-- 헤더 -->
 
-    <div class="container">
-        <div class="character-icon">
+    <div class="container"> <!-- 전체 컨테이너 -->
+    
+        <div class="character-icon"> <!-- 메이플 이미지 컨테이너 -->
             <img src="img/mushroom.jpg" alt="캐릭터 아이콘">
-        </div>
-        <div class="search-box">
-            <input type="text" placeholder="캐릭터 이름 검색">
-            <form action="char_info.jsp" method="post">
-                <button>검색하기</button>
-            </form>
-        </div>
+        </div> <!-- end 메이플 이미지 컨테이너 -->
+        
+        <div class="search-box"> <!-- 검색바 컨테이너 -->
+    		<form action="CharacterSearchServlet" method="post"> <!-- CharacterSearchServlet.java로 보냄 -->
+      		  <input type="text" name="characterName" placeholder="캐릭터 이름 검색">
+        		<button type="submit">검색하기</button>
+   			 </form>
+		</div> <!-- end 검색바 컨테이너 -->
+
     </div> <!-- end container -->
     
 </body>
