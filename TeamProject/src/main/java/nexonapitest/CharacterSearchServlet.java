@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
 
 @WebServlet("/CharacterSearchServlet")
 public class CharacterSearchServlet extends HttpServlet {
@@ -52,16 +53,21 @@ public class CharacterSearchServlet extends HttpServlet {
         int responseCode = connection.getResponseCode();
         if (responseCode == 200) {
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String response = in.readLine();
+            StringBuilder response = new StringBuilder();
+            String line;
+            
+            while ((line = in.readLine()) != null) {
+                response.append(line);
+            }
             in.close();
             
-            // 간단한 문자열 파싱
-            return response.split("\"ocid\":\"")[1].split("\"")[0];
+            JSONObject jsonResponse = new JSONObject(response.toString());
+            return jsonResponse.getString("ocid");
         }
         return null;
     }
 
-    private String getCharacterInfo(String ocid) throws Exception {
+    private JSONObject getCharacterInfo(String ocid) throws Exception {
         String apiUrl = "https://open.api.nexon.com/maplestory/v1/character/basic?ocid=" + ocid;
         
         URL url = new URL(apiUrl);
@@ -73,9 +79,15 @@ public class CharacterSearchServlet extends HttpServlet {
         int responseCode = connection.getResponseCode();
         if (responseCode == 200) {
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String response = in.readLine();
+            StringBuilder response = new StringBuilder();
+            String line;
+            
+            while ((line = in.readLine()) != null) {
+                response.append(line);
+            }
             in.close();
-            return response;
+            
+            return new JSONObject(response.toString());
         }
         return null;
     }
@@ -104,16 +116,16 @@ public class CharacterSearchServlet extends HttpServlet {
             try {
                 String ocid = getCharacterOcid(characterName);
                 if (ocid != null) {
-                    String characterInfo = getCharacterInfo(ocid);
+                    JSONObject characterInfo = getCharacterInfo(ocid);
                     if (characterInfo != null) {
                         // 응답 데이터 출력
                         response.getWriter().println("<div class='character-info'>");
                         response.getWriter().println("<h2>캐릭터 정보</h2>");
-                        response.getWriter().println("<pre>" + characterInfo + "</pre>");
+                        response.getWriter().println("<pre>" + characterInfo.toString(4) + "</pre>"); // JSON 포맷팅
                         
                         // 이미지 URL 추출 및 표시
-                        if (characterInfo.contains("character_image")) {
-                            String imageUrl = characterInfo.split("\"character_image\":\"")[1].split("\"")[0];
+                        if (characterInfo.has("character_image")) {
+                            String imageUrl = characterInfo.getString("character_image");
                             response.getWriter().println("<div class='character-image'>");
                             response.getWriter().println("<h3>캐릭터 이미지</h3>");
                             response.getWriter().println("<img src='" + imageUrl + "' alt='캐릭터 이미지'>");
