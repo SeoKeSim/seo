@@ -1,0 +1,100 @@
+/* 기본적인 스타일 설정 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+.mypage-container {
+    width: 80%;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+/* 헤더 스타일 */
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+}
+
+header nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+header nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+header nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+/* 마이페이지 내용 스타일 */
+.mypage-content {
+    background-color: white;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.mypage-content h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.info-box {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.info-box p {
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+/* 서비스 링크 스타일 */
+.mypage-links h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.mypage-links ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.mypage-links ul li {
+    margin: 10px 0;
+}
+
+.mypage-links ul li a {
+    text-decoration: none;
+    color: #4CAF50;
+    font-size: 18px;
+}
+
+.mypage-links ul li a:hover {
+    color: #333;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .mypage-container {
+        width: 90%;
+    }
+
+    header nav ul li {
+        display: block;
+        margin: 10px 0;
+    }
+}
