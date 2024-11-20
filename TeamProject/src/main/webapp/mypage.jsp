@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이페이지</title>
-    <link rel="stylesheet" href="css/mypage.css"> <!-- CSS 파일 경로 확인 -->
+    <link rel="stylesheet" href="css/mypage.css">
 </head>
 <body>
     <div class="mypage-container">
@@ -19,15 +19,28 @@
                 </ul>
             </nav>
         </header>
-        
+
         <section class="mypage-content">
             <h2>내 정보</h2>
+
+            <!-- 사용자 정보 표시 -->
             <div class="info-box">
-                <p><strong>이름:</strong> 홍길동</p>
-                <p><strong>이메일:</strong> example@example.com</p>
-                <p><strong>가입일:</strong> 2024-01-01</p>
+                <% 
+                    // 세션에서 사용자 정보 가져오기
+                    String username = (String) session.getAttribute("username");
+                    String email = (String) session.getAttribute("email");
+                    String joinDate = (String) session.getAttribute("joinDate");
+                %>
+
+                <p><strong>이름:</strong> <%= username != null ? username : "" %></p>
+                <p><strong>이메일:</strong> <%= email != null ? email : "" %></p>
+                <p><strong>가입일:</strong> <%= joinDate != null ? joinDate : "" %></p>
+
+                <!-- 로그인되지 않은 경우 로그인 버튼 표시 -->
+                <%= username == null ? "<a href='login.jsp'><button class='login-btn'>로그인</button></a>" : "" %>
             </div>
 
+            <!-- 마이페이지 서비스 링크 -->
             <div class="mypage-links">
                 <h3>서비스</h3>
                 <ul>
