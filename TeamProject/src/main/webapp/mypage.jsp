@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이페이지</title>
-    <link rel="stylesheet" href="css/mypage.css">
+    <link rel="stylesheet" href="css/mypage.css"> <!-- CSS 파일 경로 -->
 </head>
 <body>
     <div class="mypage-container">
@@ -13,9 +13,9 @@
             <h1>마이페이지</h1>
             <nav>
                 <ul>
-                    <li><a href="index.jsp">홈</a></li>
-                    <li><a href="guide.jsp">사용 안내</a></li>
-                    <li><a href="logout.jsp">로그아웃</a></li>
+                    <li><a href="index.jsp" class="nav-link">홈</a></li>
+                    <li><a href="guide.jsp" class="nav-link">가이드</a></li>
+                    <li><a href="logout.jsp" class="nav-link">로그아웃</a></li>
                 </ul>
             </nav>
         </header>
