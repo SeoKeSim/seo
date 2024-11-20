@@ -8,12 +8,15 @@
     
 </head>
 <body>
+	
     <div class="login-page">
         <div class="login-box">
             <div class="logo-section">
-                <div class="logo"></div>
-                <p>메이플스토리</p> <!-- 메이플스토리 -->
-                <p>MapleStory</p>  <!-- MapleStory 추가 -->
+            	<!-- <a href="index.jsp"> -->
+                	<div class="logo"></div>
+                	<p>메이플스토리</p> <!-- 메이플스토리 -->
+                	<p>MapleStory</p>  <!-- MapleStory 추가 -->
+              <!--   </a> -->
             </div>
             <div class="form-section">
                 <h2>로그인</h2>
