@@ -10,12 +10,15 @@
 	
     <div class="signup-page">
         <div class="signup-box">
-            <div class="logo-section">
-            	<!-- <a href="index.jsp"> -->
-               	 	<p>메이플스토리</p> <!-- 메이플스토리 -->
-               	 	<p>MapleStory</p>  <!-- MapleStory 추가 -->
-                <!-- </a> -->
-            </div>
+            <!-- <div class="logo-section">
+            	<a href="index.jsp">
+               	 	<p>메이플스토리</p> 메이플스토리
+               	 	<p>MapleStory</p>  MapleStory 추가
+                </a>
+            </div> -->
+            <a class="logo-section" href="index.jsp">
+            	<img alt="홈페이지로고(임시)" src="img/MapleLogo.png">
+            </a>
             <div class="form-section">
                 <h2>회원가입</h2>
                 <form action="signupProcess.jsp" method="post">
