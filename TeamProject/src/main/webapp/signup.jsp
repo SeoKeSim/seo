@@ -7,11 +7,14 @@
     <link rel="stylesheet" type="text/css" href="css/signup.css">
 </head>
 <body>
+	
     <div class="signup-page">
         <div class="signup-box">
             <div class="logo-section">
-                <p>메이플스토리</p> <!-- 메이플스토리 -->
-                <p>MapleStory</p>  <!-- MapleStory 추가 -->
+            	<!-- <a href="index.jsp"> -->
+               	 	<p>메이플스토리</p> <!-- 메이플스토리 -->
+               	 	<p>MapleStory</p>  <!-- MapleStory 추가 -->
+                <!-- </a> -->
             </div>
             <div class="form-section">
                 <h2>회원가입</h2>
