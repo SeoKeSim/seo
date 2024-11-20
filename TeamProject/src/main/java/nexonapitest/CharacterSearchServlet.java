@@ -46,6 +46,7 @@ public class CharacterSearchServlet extends HttpServlet {
         response.getWriter().println("</body></html>");
     }
 
+	/* 복사완 */
     private String saveCharacterInfoToJson(String characterName, JSONObject characterInfo) {
         try {
             // 프로젝트 내의 webapp 폴더 아래에 character_data 디렉토리 생성
