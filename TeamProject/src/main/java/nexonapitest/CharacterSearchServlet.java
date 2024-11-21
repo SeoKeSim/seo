@@ -48,38 +48,31 @@ public class CharacterSearchServlet extends HttpServlet {
 
     private String saveCharacterInfoToJson(String characterName, JSONObject characterInfo) {
         try {
-            System.out.println("saveCharacterInfoToJson 시작"); // 디버깅 로그
+            // 상대 경로로 설정
+            String fullSavePath = getServletContext().getRealPath("/character_data");
             
-            // 프로젝트 경로 확인
-            String projectPath = System.getProperty("user.dir");
-            System.out.println("프로젝트 경로: " + projectPath);
-
-            String fullSavePath = Paths.get(projectPath, "src", "main", "webapp", "character_data").toString();
-            System.out.println("전체 저장 경로: " + fullSavePath);
-
-            // 디렉토리 존재 확인
+            // 디렉토리가 없으면 생성
             java.io.File directory = new java.io.File(fullSavePath);
             if (!directory.exists()) {
-                System.out.println("디렉토리가 존재하지 않음. 생성 중...");
-                directory.mkdirs();
-            } else {
-                System.out.println("디렉토리가 이미 존재함.");
+                boolean dirCreated = directory.mkdirs();
+                if (!dirCreated) {
+                    System.out.println("디렉토리 생성 실패: " + fullSavePath);
+                    return null;
+                }
             }
 
-            // 파일 이름 확인
+            // 파일명 생성
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
             String fileName = String.format("%s_%s.json", characterName, timestamp);
             String filePath = Paths.get(fullSavePath, fileName).toString();
-            System.out.println("파일 경로: " + filePath);
 
-            // 파일 저장
+            // JSON 파일 저장
             try (FileWriter file = new FileWriter(filePath)) {
-                System.out.println("파일 저장 시작...");
-                file.write(characterInfo.toString(4));
+                file.write(characterInfo.toString(4)); // JSON 내용을 들여쓰기하여 저장
                 file.flush();
-                System.out.println("파일 저장 완료.");
             }
 
+            System.out.println("파일 저장 성공: " + filePath);
             return "character_data/" + fileName;
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,6 +80,7 @@ public class CharacterSearchServlet extends HttpServlet {
             return null;
         }
     }
+
 
 
     private String getCharacterOcid(String characterName) throws Exception {
