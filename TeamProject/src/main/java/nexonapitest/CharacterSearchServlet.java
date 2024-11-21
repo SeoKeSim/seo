@@ -45,11 +45,13 @@ public class CharacterSearchServlet extends HttpServlet {
         response.getWriter().println("</form>");
         response.getWriter().println("</body></html>");
     }
-
+    
+    
+    
     private String saveCharacterInfoToJson(String characterName, JSONObject characterInfo) {
         try {
-            // 상대 경로로 설정
-            String fullSavePath = getServletContext().getRealPath("/character_data");
+            // 웹 애플리케이션의 실제 경로 사용
+        	String fullSavePath = "D:\\rrg0916\\dong\\backend\\seo\\TeamProject\\src\\main\\webapp\\character_data";
             
             // 디렉토리가 없으면 생성
             java.io.File directory = new java.io.File(fullSavePath);
@@ -60,18 +62,18 @@ public class CharacterSearchServlet extends HttpServlet {
                     return null;
                 }
             }
-
+            
             // 파일명 생성
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
             String fileName = String.format("%s_%s.json", characterName, timestamp);
             String filePath = Paths.get(fullSavePath, fileName).toString();
-
+            
             // JSON 파일 저장
             try (FileWriter file = new FileWriter(filePath)) {
                 file.write(characterInfo.toString(4)); // JSON 내용을 들여쓰기하여 저장
                 file.flush();
             }
-
+            
             System.out.println("파일 저장 성공: " + filePath);
             return "character_data/" + fileName;
         } catch (Exception e) {
