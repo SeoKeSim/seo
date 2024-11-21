@@ -23,7 +23,7 @@
 
 /* 메이플스토리 텍스트 스타일 (게임스러운 느낌) */
 .logo-section p:first-of-type {
-    font-size: 40px;  /* 글씨 크기 줄임 */
+    font-size: 30px;  /* 글씨 크기 줄임 */
     font-family: 'Press Start 2P', cursive;  /* 레트로 스타일 폰트 */
     color: #fff;  /* 흰색 */
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 255, 255, 0.6); /* 텍스트에 빛나는 효과 */
@@ -68,41 +68,45 @@
 /* 입력창 텍스트 스타일 */
 input[type="text"], input[type="password"], input[type="email"] {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
     border: none;
     outline: none;
-    border-radius: 8px;
-    font-size: 16px;
-    background-color: #f8f8f8;
-}
-
-input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus {
-    background-color: #ecf0f1;
-    border-color: #3498db;
 }
 
 /* 버튼 스타일 */
 button {
-    padding: 12px 30px;
+    padding: 10px 20px;
     background-color: #3498db;
     color: white;
     border: none;
-    border-radius: 20px;
-    font-size: 16px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    font-size: 14px; /* 글씨 크기 줄임 */
+    white-space: nowrap; /* 글씨가 한 줄로 표시되도록 설정 */
 }
 
+/* 버튼 호버 스타일 */
 button:hover {
     background-color: #2980b9;
-    transform: scale(1.1);
+}
+
+/* 회원가입, 취소 버튼을 가로로 정렬 */
+.form-footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px; /* 버튼 간격 추가 */
+}
+
+/* 취소 버튼 스타일 */
+.cancel-btn {
+    background-color: transparent;
+    color: black;
+    border: 1px solid black;
 }
 
 /* 폼 하단 링크 스타일 */
-.form-footer {
-    margin-top: 20px;
-}
-
 .form-footer a {
     color: #000;  /* 검정색으로 변경 */
     text-decoration: none;
