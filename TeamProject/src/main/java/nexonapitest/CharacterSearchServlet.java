@@ -48,35 +48,46 @@ public class CharacterSearchServlet extends HttpServlet {
 
     private String saveCharacterInfoToJson(String characterName, JSONObject characterInfo) {
         try {
-            // 프로젝트 내의 webapp 폴더 아래에 character_data 디렉토리 생성
-            String projectPath = System.getProperty("user.dir");
-            String fullSavePath = Paths.get(projectPath, "src", "main", "webapp", "character_data").toString();
+            System.out.println("saveCharacterInfoToJson 시작"); // 디버깅 로그
             
-            // 저장 디렉토리가 없으면 생성
+            // 프로젝트 경로 확인
+            String projectPath = System.getProperty("user.dir");
+            System.out.println("프로젝트 경로: " + projectPath);
+
+            String fullSavePath = Paths.get(projectPath, "src", "main", "webapp", "character_data").toString();
+            System.out.println("전체 저장 경로: " + fullSavePath);
+
+            // 디렉토리 존재 확인
             java.io.File directory = new java.io.File(fullSavePath);
             if (!directory.exists()) {
+                System.out.println("디렉토리가 존재하지 않음. 생성 중...");
                 directory.mkdirs();
+            } else {
+                System.out.println("디렉토리가 이미 존재함.");
             }
 
-            // 파일명 생성 (캐릭터이름_날짜시간.json)
+            // 파일 이름 확인
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
             String fileName = String.format("%s_%s.json", characterName, timestamp);
             String filePath = Paths.get(fullSavePath, fileName).toString();
+            System.out.println("파일 경로: " + filePath);
 
-            // JSON 파일 저장
+            // 파일 저장
             try (FileWriter file = new FileWriter(filePath)) {
+                System.out.println("파일 저장 시작...");
                 file.write(characterInfo.toString(4));
                 file.flush();
+                System.out.println("파일 저장 완료.");
             }
 
-            // 웹 경로로 변환하여 리턴
             return "character_data/" + fileName;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("파일 저장 경로: " + e.getMessage());
+            System.out.println("예외 발생: " + e.getMessage());
             return null;
         }
     }
+
 
     private String getCharacterOcid(String characterName) throws Exception {
         String encodedCharacterName = URLEncoder.encode(characterName, "UTF-8").replace("+", "%20");
