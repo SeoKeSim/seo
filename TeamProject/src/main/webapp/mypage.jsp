@@ -37,7 +37,7 @@
                 <p><strong>가입일:</strong> <%= joinDate != null ? joinDate : "" %></p>
 
                 <!-- 로그인되지 않은 경우 로그인 버튼 표시 -->
-                <%= username == null ? "<a href='login.jsp'><button class='login-btn'>로그인</button></a>" : "" %>
+                <%-- <%= username == null ? "<a href='login.jsp'><button class='login-btn'>로그인</button></a>" : "" %> --%>
             </div>
 
             <!-- 마이페이지 서비스 링크 -->
