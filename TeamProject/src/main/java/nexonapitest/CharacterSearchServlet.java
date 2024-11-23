@@ -1,7 +1,6 @@
 package nexonapitest;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -17,13 +16,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.json.JSONObject;
 
 @WebServlet("/CharacterSearchServlet")
 public class CharacterSearchServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final String API_KEY = "test_43e98710a8effa6ca0f7323e240a0f3b61b6ea5a35ef83a972a59e22136864feefe8d04e6d233bd35cf2fabdeb93fb0d";
+    private static final String SAVE_DIRECTORY = "character_data";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
@@ -48,23 +47,18 @@ public class CharacterSearchServlet extends HttpServlet {
         response.getWriter().println("</form>");
         response.getWriter().println("</body></html>");
     }
-
-    private String saveCharacterInfoToJson(String characterName, JSONObject characterInfo, HttpServletRequest request) {
+    
+    
+    
+    private String saveCharacterInfoToJson(String characterName, JSONObject characterInfo, ServletContext context) {
         try {
-            // Tomcat의 배포 경로에서 실제 프로젝트 경로로 변환
-            String basePath = new File(request.getServletContext().getRealPath("/")).getParent();
-            String projectPath = basePath.substring(0, basePath.lastIndexOf("target")) + "src/main/webapp/character_data";
-
-            // 폴더가 없으면 생성
-            File directory = new File(projectPath);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-
+            // 웹 애플리케이션의 실제 물리적 경로 얻기
+            String realPath = context.getRealPath("/character_data");
+            
             // 파일명 생성
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
             String fileName = String.format("%s_%s.json", characterName, timestamp);
-            String filePath = Paths.get(projectPath, fileName).toString();
+            String filePath = Paths.get(realPath, fileName).toString();
 
             // JSON 파일 저장
             try (FileWriter file = new FileWriter(filePath)) {
@@ -74,33 +68,37 @@ public class CharacterSearchServlet extends HttpServlet {
 
             System.out.println("파일 저장 성공: " + filePath);
             return "character_data/" + fileName;
+            
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("예외 발생: " + e.getMessage());
             return null;
         }
     }
 
+
+
     private String getCharacterOcid(String characterName) throws Exception {
         String encodedCharacterName = URLEncoder.encode(characterName, "UTF-8").replace("+", "%20");
         String apiUrl = "https://open.api.nexon.com/maplestory/v1/id?character_name=" + encodedCharacterName;
-
+        
         URL url = new URL(apiUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("x-nxopen-api-key", API_KEY);
         connection.setRequestProperty("accept", "application/json");
-
+        
         int responseCode = connection.getResponseCode();
         if (responseCode == 200) {
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder response = new StringBuilder();
             String line;
-
+            
             while ((line = in.readLine()) != null) {
                 response.append(line);
             }
             in.close();
-
+            
             JSONObject jsonResponse = new JSONObject(response.toString());
             return jsonResponse.getString("ocid");
         }
@@ -109,24 +107,24 @@ public class CharacterSearchServlet extends HttpServlet {
 
     private JSONObject getCharacterInfo(String ocid) throws Exception {
         String apiUrl = "https://open.api.nexon.com/maplestory/v1/character/basic?ocid=" + ocid;
-
+        
         URL url = new URL(apiUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("x-nxopen-api-key", API_KEY);
         connection.setRequestProperty("accept", "application/json");
-
+        
         int responseCode = connection.getResponseCode();
         if (responseCode == 200) {
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder response = new StringBuilder();
             String line;
-
+            
             while ((line = in.readLine()) != null) {
                 response.append(line);
             }
             in.close();
-
+            
             return new JSONObject(response.toString());
         }
         return null;
@@ -160,20 +158,20 @@ public class CharacterSearchServlet extends HttpServlet {
                     JSONObject characterInfo = getCharacterInfo(ocid);
                     if (characterInfo != null) {
                         // JSON 파일 저장
-                        String savedFilePath = saveCharacterInfoToJson(characterName, characterInfo, request);
-
+                    	String savedFilePath = saveCharacterInfoToJson(characterName, characterInfo, getServletContext());
+                        
                         // 응답 데이터 출력
                         response.getWriter().println("<div class='character-info'>");
                         response.getWriter().println("<h2>캐릭터 정보</h2>");
                         response.getWriter().println("<pre>" + characterInfo.toString(4) + "</pre>");
-
+                        
                         // JSON 다운로드 링크
                         if (savedFilePath != null) {
                             response.getWriter().println("<p>JSON 파일이 다음 위치에 저장되었습니다: " + savedFilePath + "</p>");
                             response.getWriter().println("<a href='" + request.getContextPath() + "/" + savedFilePath + 
                                 "' class='download-link' download>JSON 파일 다운로드</a>");
                         }
-
+                        
                         // 이미지 URL 추출 및 표시
                         if (characterInfo.has("character_image")) {
                             String imageUrl = characterInfo.getString("character_image");
@@ -182,7 +180,7 @@ public class CharacterSearchServlet extends HttpServlet {
                             response.getWriter().println("<img src='" + imageUrl + "' alt='캐릭터 이미지'>");
                             response.getWriter().println("</div>");
                         }
-
+                        
                         response.getWriter().println("</div>");
                     }
                 }
@@ -202,7 +200,7 @@ public class CharacterSearchServlet extends HttpServlet {
                 (characterName != null ? characterName.replace("'", "&#39;") : "") + "'>");
         response.getWriter().println("<input type='submit' value='검색'>");
         response.getWriter().println("</form>");
-
+        
         response.getWriter().println("</body></html>");
     }
 }
