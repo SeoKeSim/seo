@@ -131,7 +131,7 @@ public class CharacterSearchServlet extends HttpServlet {
     }
 
     private JSONObject getCharacterEquipment(String ocid) throws Exception {
-        String apiUrlEquipment = "https://open.api.nexon.com/maplestory/v1/character/cashitem-equipment?ocid=" + ocid;
+        String apiUrlEquipment = "https://open.api.nexon.com/maplestory/v1/character/item-equipment?ocid=" + ocid;
         return fetchDataFromApi(apiUrlEquipment);
     }
 

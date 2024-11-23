@@ -1,69 +1,88 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="org.json.JSONObject, org.json.JSONArray" %>
 <%
-    // Servlet에서 전달받은 데이터 가져오기
-    JSONObject characterData = (JSONObject) request.getAttribute("characterData");
-    JSONObject characterEquipment = null;
-
-    if (characterData != null && characterData.has("equipment")) {
-        characterEquipment = characterData.getJSONObject("equipment");
-    }
+    JSONObject characterInfo = (JSONObject) request.getAttribute("characterInfo");
+    JSONObject characterEquipment = (JSONObject) request.getAttribute("characterEquipment");
+    String error = (String) request.getAttribute("error");
 %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>캐릭터 정보</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .character-info, .equipment-image {
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #ddd;
-        }
-        .equipment-image img {
-            margin: 10px;
-            width: 50px;
-            height: 50px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/char_info.css">
 </head>
 <body>
     <h1>캐릭터 정보</h1>
+    
+    <div class="search-form">
+        <form action="CharacterSearchServlet" method="post">
+            <input type="text" name="characterName" placeholder="캐릭터 이름을 입력하세요">
+            <button type="submit">검색</button>
+        </form>
+    </div>
 
-    <% if (characterData != null) { %>
-        <div class="character-info">
-            <h2>기본 정보</h2>
-            <pre><%= characterData.toString(4) %></pre>
+    <% if (error != null) { %>
+        <div class="error-message">
+            <%= error %>
         </div>
+    <% } %>
 
-        <% if (characterEquipment != null) { %>
-            <div class="equipment-image">
-                <h2>장착 장비</h2>
-                <% 
-                    for (Object key : characterEquipment.keySet()) {
-                        Object itemObject = characterEquipment.get((String) key);
-                        if (itemObject != null && itemObject instanceof JSONObject) {
-                            JSONObject item = (JSONObject) itemObject;
-                            String imageUrl = item.optString("imageUrl", ""); // 기본값 처리
-                            String itemName = item.optString("name", "알 수 없는 장비");
-                %>
-                            <div>
-                                <img src="<%= imageUrl %>" alt="<%= itemName %>" />
-                                <p><%= itemName %></p>
-                            </div>
-                <%      }
-                    }
-                %>
+    <% if (characterInfo != null && characterInfo.has("basic")) { 
+        JSONObject basicInfo = characterInfo.getJSONObject("basic");
+    %>
+        <div class="character-info">
+            <h2>캐릭터 정보</h2>
+            <div class="basic-info">
+                <div class="info-item">
+                    <div class="info-label">닉네임</div>
+                    <div><%= basicInfo.getString("character_name") %></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">레벨</div>
+                    <div><%= basicInfo.getInt("character_level") %></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">직업</div>
+                    <div><%= basicInfo.getString("character_class") %></div>
+                </div>
             </div>
-        <% } else { %>
-            <p>장착 장비 데이터가 없습니다.</p>
-        <% } %>
+        </div>
+    <% } %>
+
+    <% if (characterEquipment != null && characterEquipment.has("item_equipment")) { %>
+        <div class="equipment-section">
+            <h2>착용 장비</h2>
+            <div class="equipment-grid">
+            <%
+                JSONArray items = characterEquipment.getJSONArray("item_equipment");
+                for (int i = 0; i < items.length(); i++) {
+                    JSONObject item = items.getJSONObject(i);
+            %>
+                <div class="equipment-item">
+                    <% if (item.has("item_icon")) { %>
+                        <img src="<%= item.getString("item_icon") %>" 
+                             alt="<%= item.getString("item_name") %>"
+                             onerror="this.src='images/default-item.png'"/>
+                    <% } %>
+                    <div class="item-name"><%= item.getString("item_name") %></div>
+                    <div class="item-details">
+                        <% if (item.has("item_shape_name")) { %>
+                            <p><%= item.getString("item_shape_name") %></p>
+                        <% } %>
+                        <% if (item.has("item_equipment_slot")) { %>
+                            <p><%= item.getString("item_equipment_slot") %></p>
+                        <% } %>
+                    </div>
+                </div>
+            <%
+                }
+            %>
+            </div>
+        </div>
     <% } else { %>
-        <p>캐릭터 데이터를 불러올 수 없습니다.</p>
+        <p>장비 데이터를 불러올 수 없습니다.</p>
     <% } %>
 </body>
 </html>
