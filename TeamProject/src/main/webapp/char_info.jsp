@@ -1,48 +1,69 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="org.json.JSONObject, org.json.JSONArray" %>
+<%
+    // Servlet에서 전달받은 데이터 가져오기
+    JSONObject characterData = (JSONObject) request.getAttribute("characterData");
+    JSONObject characterEquipment = null;
+
+    if (characterData != null && characterData.has("equipment")) {
+        characterEquipment = characterData.getJSONObject("equipment");
+    }
+%>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title>스펙 확인하기!</title>
-    <link rel="stylesheet" href="css/char_info.css">
-    <link rel="stylesheet" href="css/headermain.css">
+    <meta charset="UTF-8">
+    <title>캐릭터 정보</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .character-info, .equipment-image {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+        .equipment-image img {
+            margin: 10px;
+            width: 50px;
+            height: 50px;
+        }
+    </style>
 </head>
 <body>
-	<%@include file="module/headermain.jsp" %>
-    <div class="profile-container">
-        <!-- 캐릭터 이미지 및 정보 -->
-        <img src="img/character.png" alt="Character Image">
-    </div>
+    <h1>캐릭터 정보</h1>
 
-    <!-- 아이템 목록 -->
-    <div class="items-container">
-        <div class="character-info">전투력</div>
-        <div class="item">
-            <span class="item-name">아이템 이름 1</span>
-            <span class="item-info">세부 정보</span>
+    <% if (characterData != null) { %>
+        <div class="character-info">
+            <h2>기본 정보</h2>
+            <pre><%= characterData.toString(4) %></pre>
         </div>
-        <div class="item">
-            <span class="item-name">아이템 이름 2</span>
-            <span class="item-info">세부 정보</span>
-        </div>
-        <div class="item">
-            <span class="item-name">아이템 이름 3</span>
-            <span class="item-info">세부 정보</span>
-        </div>
-        <div class="item">
-            <span class="item-name">아이템 이름 4</span>
-            <span class="item-info">세부 정보</span>
-        </div>
-        <div class="item">
-            <span class="item-name">아이템 이름 5</span>
-            <span class="item-info">세부 정보</span>
-        </div>
-        <!-- 추가 아이템 리스트 -->
-        <div class="guide-button">
-            <button onclick="location.href='guide.jsp'">가이드 바로가기</button>
-        </div>
-    </div>
 
-    <!-- 가이드 버튼 -->
-    
+        <% if (characterEquipment != null) { %>
+            <div class="equipment-image">
+                <h2>장착 장비</h2>
+                <% 
+                    for (Object key : characterEquipment.keySet()) {
+                        Object itemObject = characterEquipment.get((String) key);
+                        if (itemObject != null && itemObject instanceof JSONObject) {
+                            JSONObject item = (JSONObject) itemObject;
+                            String imageUrl = item.optString("imageUrl", ""); // 기본값 처리
+                            String itemName = item.optString("name", "알 수 없는 장비");
+                %>
+                            <div>
+                                <img src="<%= imageUrl %>" alt="<%= itemName %>" />
+                                <p><%= itemName %></p>
+                            </div>
+                <%      }
+                    }
+                %>
+            </div>
+        <% } else { %>
+            <p>장착 장비 데이터가 없습니다.</p>
+        <% } %>
+    <% } else { %>
+        <p>캐릭터 데이터를 불러올 수 없습니다.</p>
+    <% } %>
 </body>
 </html>
