@@ -14,7 +14,7 @@ body {
 
 /* 헤더 스타일 */
 header {
-    background-color: #f39c12;  /* 주황색 */
+    background-color: #f39c12; /* 주황색 */
     color: white;
     padding: 10px 0;
     text-align: center;
@@ -23,9 +23,9 @@ header {
 header nav ul {
     list-style-type: none;
     padding: 0;
-    text-align: center;  /* 가로로 정렬 */
-    display: flex;  /* 플렉스박스 사용 */
-    justify-content: center;  /* 아이템들을 가로로 중앙 정렬 */
+    text-align: center;
+    display: flex;
+    justify-content: center;
 }
 
 header nav ul li {
@@ -33,22 +33,22 @@ header nav ul li {
 }
 
 header nav ul li a {
-    color: black;  /* 글씨 색상 변경 */
+    color: black;
     text-decoration: none;
     font-size: 18px;
-    padding: 10px 20px;  /* 버튼처럼 보이도록 패딩 추가 */
-    background-color: transparent;  /* 배경을 투명으로 설정 */
-    border: none;  /* 테두리 제거 */
-    transition: color 0.3s;  /* 호버시 부드럽게 색 변경 */
+    padding: 10px 20px;
+    background-color: transparent;
+    border: none;
+    transition: color 0.3s;
 }
 
 header nav ul li a:hover {
-    color: #3498db;  /* 호버 시 글씨 색상을 파란색으로 변경 */
+    color: #3498db; /* 호버 시 글씨 색상을 파란색으로 변경 */
 }
 
 /* 마이페이지 내용 스타일 */
 .mypage-content {
-    background-color: #f1c40f;  /* 노란색 */
+    background-color: #f1c40f; /* 노란색 */
     padding: 20px;
     margin-top: 20px;
     border-radius: 5px;
@@ -75,23 +75,22 @@ header nav ul li a:hover {
 /* 로그인 버튼 스타일 */
 .login-btn {
     padding: 10px 20px;
-    background-color: #3498db;  /* 파란색 배경 */
-    color: white;  /* 하얀색 글씨 */
-    border: 2px solid #3498db;  /* 파란색 테두리 */
+    background-color: #3498db; /* 파란색 배경 */
+    color: white;
+    border: 2px solid #3498db;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    width: 200px;  /* 버튼 너비 */
+    width: 200px;
     text-align: center;
-    margin: 20px auto;  /* 버튼을 중앙에 위치시키기 위해 */
-    display: block;  /* 중앙 정렬을 위한 설정 */
+    margin: 20px auto;
+    display: block;
 }
 
-/* 버튼 호버 스타일 */
 .login-btn:hover {
-    background-color: #2980b9;  /* 어두운 파란색 */
-    border-color: #2980b9;  /* 테두리 색상 변경 */
-    color: white;  /* 글씨 색상은 하얀색으로 유지 */
+    background-color: #2980b9;
+    border-color: #2980b9;
+    color: white;
 }
 
 /* 서비스 링크 스타일 */
@@ -111,7 +110,7 @@ header nav ul li a:hover {
 
 .mypage-links ul li a {
     text-decoration: none;
-    color: #000000;  /* 주황색 */
+    color: #000000;
     font-size: 18px;
 }
 

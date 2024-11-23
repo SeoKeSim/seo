@@ -46,8 +46,7 @@
                 <ul>
                     <li><a href="contact.jsp">문의하기</a></li>
                     <li><a href="favorites.jsp">즐겨찾기</a></li>
-                    <li><a href="change-password.jsp">비밀번호 변경</a></li>
-                    <li><a href="change-email.jsp">이메일 변경</a></li>
+                    <li><a href="update-info.jsp">회원 정보 수정</a></li> <!-- 회원 정보 수정 -->
                 </ul>
             </div>
         </section>
