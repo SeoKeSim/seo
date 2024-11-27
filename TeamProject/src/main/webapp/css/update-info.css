@@ -25,26 +25,6 @@ header h1 {
     margin-bottom: 20px;
 }
 
-/* 익명화된 정보 스타일 */
-.current-info {
-    padding: 10px 20px;
-    background-color: #f6f6f6; /* 연한 회색 배경 */
-    border-radius: 5px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd; /* 얇은 테두리 */
-    text-align: left;
-}
-
-.current-info label {
-    font-weight: bold;
-    color: #555;
-}
-
-.current-info span {
-    font-weight: bold;
-    color: #2c3e50; /* 진한 색상 */
-}
-
 /* 폼 스타일 */
 .update-form {
     padding: 10px;
@@ -53,6 +33,9 @@ header h1 {
 .form-group {
     margin-bottom: 15px;
     text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .form-group label {
@@ -60,15 +43,18 @@ header h1 {
     font-size: 14px;
     color: #555;
     margin-bottom: 5px;
+    flex: 1;
+    text-align: left; /* 텍스트 왼쪽 정렬 */
 }
 
 .form-group input {
-    width: 100%;
+    width: 60%; /* 입력 필드 크기 조정 */
     padding: 10px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
+    margin-right: 10px;
 }
 
 .form-group input:focus {
@@ -76,40 +62,27 @@ header h1 {
     outline: none;
 }
 
-/* 버튼 스타일 */
-.form-actions {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.btn-submit {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
+.btn-edit-div {
+    background-color: #F1C40F; /* 배경색을 #F1C40F로 설정 */
+    color: #F1C40F;            /* 글자 색을 #F1C40F로 설정 */
+    border: none;              /* 테두리 없애기 */
+    padding: 10px 20px;        /* 버튼 크기 조정 */
+    font-size: 14px;           /* 글자 크기 */
+    border-radius: 5px;        /* 둥근 모서리 */
+    cursor: not-allowed;      /* 클릭 불가능 상태 */
     transition: background-color 0.3s;
 }
 
-.btn-submit:hover {
-    background-color: #2980b9;
-}
-
+/* 변경 버튼 스타일 */
 .btn-edit {
-    background-color: #2ecc71;
+    background-color: #3498db; /* 파란색으로 수정 */
     color: white;
     border: none;
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 10px 20px;  /* 버튼 크기 수정 */
+    font-size: 14px;
     border-radius: 5px;
-    cursor: pointer;
+    /* cursor: pointer; */
     transition: background-color 0.3s;
-}
-
-.btn-edit:hover {
-    background-color: #27ae60;
 }
 
 /* 반응형 디자인 */
@@ -121,4 +94,18 @@ header h1 {
     header h1 {
         font-size: 20px;
     }
+
+    .form-group input {
+        width: 100%; /* 작은 화면에서 입력 필드 크기 조정 */
+        margin-right: 0%;
+    }
+
+    .btn-edit {
+        width: 100%; /* 버튼 크기 조정 */
+        margin-top: 5px;
+    }
+}
+
+.update-form {
+	margin-left: -10;
 }
