@@ -15,6 +15,7 @@
 <br><br>
 	
 		<form method="get" action="<%= request.getContextPath() %>/login.do">
+		
 			<table width="50%" border="1" align="center">
 				<tr bordercolor="#FFFF66"> 
 					<td colspan="2" align="center">로그인</td>
