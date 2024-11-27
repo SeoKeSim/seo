@@ -8,24 +8,24 @@
     
 </head>
 <body>
-	
+
     <div class="login-page">
         <div class="login-box">
             <!-- <div class="logo-section">
-            	<a href="index.jsp">
-                	<div class="logo"></div>
-                	<p>메이플스토리</p> 메이플스토리
-                	<p>MapleStory</p>  MapleStory 추가
+            <a href="index.jsp">
+                <div class="logo"></div>
+                <p>메이플스토리</p> 메이플스토리
+                <p>MapleStory</p>  MapleStory 추가
                 </a>
             </div> -->
             <a class="logo-section" href="index.jsp">
-            	<img alt="홈페이지로고(임시)" src="img/MapleLogo.png">
+            <img alt="홈페이지로고(임시)" src="img/MapleLogo.png">
             </a>
             <div class="form-section">
                 <h2>로그인</h2>
-                <form action="loginProcess.jsp" method="post">
+                <form method="get" action="<%= request.getContextPath() %>/user">
                     <div class="input-group">
-                        <input type="text" id="userId" name="userId" placeholder="아이디" required>
+                        <input type="text" id="id" name="id" placeholder="아이디" required>
                     </div>
                     <div class="input-group">
                         <input type="password" id="password" name="password" placeholder="비밀번호" required>
@@ -38,18 +38,5 @@
             </div>
         </div>
     </div>
-    
-    <%-- 회원가입 성공 알림 --%>
-    <%
-        String successMessage = (String) request.getAttribute("successMessage");
-        if (successMessage != null) {
-    %>
-        <script>
-            alert('<%= successMessage %>');
-        </script>
-    <%
-        }
-    %>
-    
 </body>
 </html>
