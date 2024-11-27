@@ -37,7 +37,7 @@
                 <!-- 비밀번호 필드 -->
                 <div class="form-group">
                     <label for="password">비밀번호</label>
-                    <input class="update-form" type="password" id="password" name="password" placeholder="새 비밀번호를 입력하세요" required> 
+                    <input type="password" id="password" name="password" placeholder="새 비밀번호를 입력하세요" required>
                 </div>
                 
                 <!-- 비밀번호 재입력 필드 -->
