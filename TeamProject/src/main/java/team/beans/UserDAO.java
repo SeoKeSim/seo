@@ -4,7 +4,7 @@ import java.sql.*;
 
 
 public class UserDAO {
-
+	//회원 정보 조회 메서드 지금 안쓰는 메서드임
     public UserDTO UserCheck(String id) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
