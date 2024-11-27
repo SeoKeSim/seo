@@ -8,7 +8,7 @@
             <li><a href="guide.jsp">가이드</a></li>
             <li class="right"><a href="login.jsp">로그인</a> </li>
             <li><a href="signup.jsp">회원가입</a></li>
-            <li><a href="mypage.jsp">마이페이지</a></li> <!-- 마이페이지 링크 추가 -->
+            <li><a href="mypage.jsp">마이페이지</a></li>
         </ul>
     </div>
 </header>
