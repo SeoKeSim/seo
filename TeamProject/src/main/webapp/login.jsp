@@ -38,5 +38,18 @@
             </div>
         </div>
     </div>
+    
+    <%-- 회원가입 성공 알림 --%>
+    <%
+        String successMessage = (String) request.getAttribute("successMessage");
+        if (successMessage != null) {
+    %>
+        <script>
+            alert('<%= successMessage %>');
+        </script>
+    <%
+        }
+    %>
+    
 </body>
 </html>
