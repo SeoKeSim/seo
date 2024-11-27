@@ -100,7 +100,7 @@ public class UserDAO {
         return loginCon;
     }
 
-    // 회원 정보 수정 메서드
+    // 회원 정보 수정 메서드(관리자)
     public boolean updateUser(UserDTO user) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -141,5 +141,30 @@ public class UserDAO {
             JDBCUtil.close(stmt, conn);
         }
         return isDeleted;
+    }
+    
+    //회원정보 수정
+    public boolean updateUserInfo(UserDTO user) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        boolean isUpdated = false;
+        
+        try {
+            conn = JDBCUtil.getConnection();
+            String sql = "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?";
+            stmt = conn.prepareStatement(sql);
+            
+            stmt.setString(1, user.getName());
+            stmt.setString(2, user.getEmail());
+            stmt.setString(3, user.getPassword());
+            stmt.setString(4, user.getId());
+            
+            int rowsAffected = stmt.executeUpdate();
+            isUpdated = (rowsAffected > 0);
+        } finally {
+            JDBCUtil.close(stmt, conn);
+        }
+        
+        return isUpdated;
     }
 }
