@@ -62,18 +62,6 @@ header h1 {
     outline: none;
 }
 
-.btn-edit-div {
-    background-color: #F1C40F; /* 배경색을 #F1C40F로 설정 */
-    color: #F1C40F;            /* 글자 색을 #F1C40F로 설정 */
-    border: none;              /* 테두리 없애기 */
-    padding: 10px 20px;        /* 버튼 크기 조정 */
-    font-size: 14px;           /* 글자 크기 */
-    border-radius: 5px;        /* 둥근 모서리 */
-    cursor: not-allowed;      /* 클릭 불가능 상태 */
-    transition: background-color 0.3s;
-}
-
-/* 변경 버튼 스타일 */
 .btn-edit {
     background-color: #3498db; /* 파란색으로 수정 */
     color: white;
@@ -81,8 +69,11 @@ header h1 {
     padding: 10px 20px;  /* 버튼 크기 수정 */
     font-size: 14px;
     border-radius: 5px;
-    /* cursor: pointer; */
     transition: background-color 0.3s;
+}
+
+.btn-edit:hover {
+    background-color: #2980b9; /* hover 시 더 어두운 파란색 */
 }
 
 /* 반응형 디자인 */
@@ -104,8 +95,4 @@ header h1 {
         width: 100%; /* 버튼 크기 조정 */
         margin-top: 5px;
     }
-}
-
-.update-form {
-	margin-left: -10;
 }
