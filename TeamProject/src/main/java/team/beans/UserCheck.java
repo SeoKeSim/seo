@@ -10,30 +10,30 @@ import javax.servlet.annotation.WebServlet;
 @WebServlet("/user")
 public class UserCheck extends HttpServlet {
 
+@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String id = request.getParameter("id"); // URL 파라미터에서 'id' 값 가져오기
-
-        try {
+    request.setCharacterEncoding("UTF-8");
+    String id = request.getParameter("id"); // URL 파라미터에서 'id' 값 가져오기
+        String password = request.getParameter("password");
+             
+        UserDAO uDAO = new UserDAO(); // DAO 객체 생성
+        boolean loginCheck = uDAO.login(id, password);
             
-        	UserDAO uDAO = new UserDAO(); // DAO 객체 생성
-            UserDTO uDTO = uDAO.UserCheck(id);
+            if(loginCheck){
+        request.setAttribute("loginResult", loginCheck);
+    HttpSession session = request.getSession();
+    session.setAttribute("idKey", id);
+    RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+    dispatcher.forward(request, response);
 
-            if (uDTO != null) {
-                // 사용자 정보가 있으면 request에 세팅 후 JSP로 포워딩
-                request.setAttribute("user", uDTO);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/userInfo.jsp");
-                dispatcher.forward(request, response);
-            } else {
-            	response.setContentType("text/html; charset=UTF-8");
-                response.getWriter().println("<script type='text/javascript'>");
-                response.getWriter().println("alert('사용자를 찾을 수 없습니다.');");
-                response.getWriter().println("window.history.back();");  // 이전 페이지로 돌아가게 할 수도 있음
-                response.getWriter().println("</script>");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            response.getWriter().println("데이터베이스 오류 발생.");
-        }
+    }else{
+          response.sendRedirect("LogError.jsp");
     }
+       
+
+      
+    }
+
+
+    
 }
