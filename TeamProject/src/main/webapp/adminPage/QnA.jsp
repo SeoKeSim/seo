@@ -3,8 +3,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>관리자 페이지</title>
+    <title>문의 확인</title>
     <link rel="stylesheet" href="css/admin.css">
     <link rel="stylesheet" href="css/adminsidebar.css">
 </head>
@@ -12,11 +11,9 @@
     <%@ include file="module/adminsidebar.jsp" %>
 
     <main>
-        <section>
-            <h2>관리자 페이지</h2>
-            <p>관리자 메인 페이지 입니다.</p>
-            <p>관리하려는 항목을 선택해주세요</p>
-        
+        <section id="QnA">
+            <h2>문의 확인</h2>
+            <p>문의 내용을 확인하고 답변을 작성합니다.</p>
         </section>
     </main>
 </body>

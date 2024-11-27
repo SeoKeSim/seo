@@ -100,4 +100,45 @@ public class UserDAO {
           }
           return loginCon;
       }
+    
+    public boolean updateUser(UserDTO user) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        boolean isUpdated = false;
+
+        try {
+            conn = JDBCUtil.getConnection();
+            String sql = "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, user.getName());
+            stmt.setString(2, user.getEmail());
+            stmt.setString(3, user.getPassword());
+            stmt.setString(4, user.getId());
+
+            int rowsAffected = stmt.executeUpdate();
+            isUpdated = (rowsAffected > 0);
+        } finally {
+            JDBCUtil.close(stmt, conn);
+        }
+        return isUpdated;
+    }
+    
+    public boolean deleteUser(String id) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        boolean isDeleted = false;
+
+        try {
+            conn = JDBCUtil.getConnection();
+            String sql = "DELETE FROM users WHERE id = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, id);
+
+            int rowsAffected = stmt.executeUpdate();
+            isDeleted = (rowsAffected > 0);
+        } finally {
+            JDBCUtil.close(stmt, conn);
+        }
+        return isDeleted;
+    }
 }
