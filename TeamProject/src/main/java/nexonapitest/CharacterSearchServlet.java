@@ -24,8 +24,11 @@ import org.json.JSONObject;
 public class CharacterSearchServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final String API_KEY = "test_43e98710a8effa6ca0f7323e240a0f3b61b6ea5a35ef83a972a59e22136864feefe8d04e6d233bd35cf2fabdeb93fb0d";
-    private static final String PROJECT_PATH = "D:\\rrg0916\\dong\\backend\\seo\\TeamProject";
-    private static final String SAVE_DIRECTORY = "src\\main\\webapp\\character_data";
+	/*
+	 * private static final String PROJECT_PATH =
+	 * "D:\\rrg0916\\dong\\backend\\seo\\TeamProject"; private static final String
+	 * SAVE_DIRECTORY = "src\\main\\webapp\\character_data";
+	 */
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -36,17 +39,15 @@ public class CharacterSearchServlet extends HttpServlet {
 
     private String saveCharacterInfoToJson(String characterName, JSONObject characterInfo, ServletContext context) {
         try {
-            String fullPath = Paths.get(PROJECT_PATH, SAVE_DIRECTORY).toString();
+            // 웹 애플리케이션의 실제 물리적 경로 얻기
+            String realPath = context.getRealPath("/characterdata");
 
-            File directory = new File(fullPath);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-
+            // 파일명 생성
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-            String fileName = String.format("%s_%s.json", characterName, timestamp);
-            String filePath = Paths.get(fullPath, fileName).toString();
+            String fileName = String.format("%s%s.json", characterName, timestamp);
+            String filePath = Paths.get(realPath, fileName).toString();
 
+            // JSON 파일 저장
             try (FileWriter file = new FileWriter(filePath)) {
                 file.write(characterInfo.toString(4));
                 file.flush();
@@ -54,8 +55,10 @@ public class CharacterSearchServlet extends HttpServlet {
 
             System.out.println("파일 저장 성공: " + filePath);
             return "character_data/" + fileName;
+
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("예외 발생: " + e.getMessage());
             return null;
         }
     }

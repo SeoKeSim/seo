@@ -23,10 +23,10 @@
                 <h2>회원가입</h2>
                 <form action="signupProcess.jsp" method="post">
                     <div class="input-group">
-                        <input type="text" id="userName" name="userName" placeholder="이름" required>
+                        <input type="text" id="name" name="name" placeholder="이름" required>
                     </div>
                     <div class="input-group">
-                        <input type="text" id="userId" name="userId" placeholder="아이디" required>
+                        <input type="text" id="id" name="id" placeholder="아이디" required>
                     </div>
                     <div class="input-group">
                         <input type="password" id="password" name="password" placeholder="패스워드" required>
