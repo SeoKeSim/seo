@@ -29,7 +29,7 @@ public class UpdateUserServlet extends HttpServlet {
         
         try {
             UserDAO userDAO = new UserDAO();
-            boolean isUpdated = userDAO.updateUser(user);
+            boolean isUpdated = userDAO.updateUserInfo(user);
             
             if(isUpdated) {
                 response.sendRedirect("updateSuccess.jsp");
