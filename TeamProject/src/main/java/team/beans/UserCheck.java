@@ -11,12 +11,12 @@ import javax.servlet.annotation.WebServlet;
 public class UserCheck extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String userId = request.getParameter("id"); // URL 파라미터에서 'id' 값 가져오기
+        String id = request.getParameter("id"); // URL 파라미터에서 'id' 값 가져오기
 
         try {
             
         	UserDAO uDAO = new UserDAO(); // DAO 객체 생성
-            UserDTO uDTO = uDAO.UserCheck(userId);
+            UserDTO uDTO = uDAO.UserCheck(id);
 
             if (uDTO != null) {
                 // 사용자 정보가 있으면 request에 세팅 후 JSP로 포워딩
