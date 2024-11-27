@@ -8,7 +8,7 @@ import javax.servlet.annotation.WebServlet;
 
 
 @WebServlet("/user")
-public class UserCheck extends HttpServlet {
+public class UserLogin extends HttpServlet {
 
 @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

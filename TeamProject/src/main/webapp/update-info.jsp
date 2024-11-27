@@ -1,10 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
+
 <%
-    // 세션에서 데이터 가져오기
-    // 이름과 이메일 초기 값 설정
-    String name = "김*환"; // 기본 이름 값
-    String email = "seokes******@gmail.com"; // 기본 이메일 값
+	String mem_id = (String)session.getAttribute("idKey");
 %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -23,14 +22,14 @@
                 <!-- 이름 필드 -->
                 <div class="form-group">
                     <label for="name">이름</label>
-                    <input type="text" id="name" name="name" value="<%= name %>" required>
+                    <input type="text" id="name" name="name" value="" required>
                     <button type="submit" class="btn-edit">변경</button>
                 </div>
                 
                 <!-- 이메일 필드 -->
                 <div class="form-group">
                     <label for="email">이메일</label>
-                    <input type="email" id="email" name="email" value="<%= email %>" required>
+                    <input type="email" id="email" name="email" value="" required>
                     <button type="submit" class="btn-edit">변경</button>
                 </div>
                 
