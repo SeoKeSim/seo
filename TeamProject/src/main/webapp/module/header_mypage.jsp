@@ -17,7 +17,7 @@
             <% } else { %>
                 <!-- 로그인한 경우 -->
                 <li class="right"><a href="logout.do">로그아웃</a></li>
-                <li><a href="mypage.jsp">마이페이지</a></li>
+                
             <% } %>
         </ul>
     </div>
