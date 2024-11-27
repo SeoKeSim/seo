@@ -23,9 +23,9 @@
             </a>
             <div class="form-section">
                 <h2>로그인</h2>
-                <form action="loginProcess.jsp" method="post">
+                <form method="get" action="<%= request.getContextPath() %>/user">
                     <div class="input-group">
-                        <input type="text" id="userId" name="userId" placeholder="아이디" required>
+                        <input type="text" id="id" name="id" placeholder="아이디" required>
                     </div>
                     <div class="input-group">
                         <input type="password" id="password" name="password" placeholder="비밀번호" required>
