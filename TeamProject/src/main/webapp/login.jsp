@@ -8,18 +8,18 @@
     
 </head>
 <body>
-	
+
     <div class="login-page">
         <div class="login-box">
             <!-- <div class="logo-section">
-            	<a href="index.jsp">
-                	<div class="logo"></div>
-                	<p>메이플스토리</p> 메이플스토리
-                	<p>MapleStory</p>  MapleStory 추가
+            <a href="index.jsp">
+                <div class="logo"></div>
+                <p>메이플스토리</p> 메이플스토리
+                <p>MapleStory</p>  MapleStory 추가
                 </a>
             </div> -->
             <a class="logo-section" href="index.jsp">
-            	<img alt="홈페이지로고(임시)" src="img/MapleLogo.png">
+            <img alt="홈페이지로고(임시)" src="img/MapleLogo.png">
             </a>
             <div class="form-section">
                 <h2>로그인</h2>
@@ -38,18 +38,5 @@
             </div>
         </div>
     </div>
-    
-    <%-- 회원가입 성공 알림 --%>
-    <%
-        String successMessage = (String) request.getAttribute("successMessage");
-        if (successMessage != null) {
-    %>
-        <script>
-            alert('<%= successMessage %>');
-        </script>
-    <%
-        }
-    %>
-    
 </body>
 </html>
