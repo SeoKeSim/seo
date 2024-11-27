@@ -1,6 +1,8 @@
 package team.beans;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class UserDAO {
@@ -140,5 +142,32 @@ public class UserDAO {
             JDBCUtil.close(stmt, conn);
         }
         return isDeleted;
+    }
+    //배열로 가져오기
+    public List<UserDTO> getAllUsers() throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<UserDTO> userList = new ArrayList<>();
+
+        try {
+            conn = JDBCUtil.getConnection();
+            String sql = "SELECT id, name, email, password FROM users";
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                UserDTO user = new UserDTO();
+                user.setId(rs.getString("id"));
+                user.setName(rs.getString("name"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                userList.add(user);
+            }
+        } finally {
+            JDBCUtil.close(rs, stmt, conn);
+        }
+
+        return userList;
     }
 }

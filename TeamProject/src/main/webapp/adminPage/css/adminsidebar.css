@@ -1,4 +1,5 @@
 @charset "UTF-8";
+
 .sidebar {
     width: 200px;
     height: 100vh;
@@ -19,6 +20,11 @@
     margin-bottom: 20px;
 }
 
+.sidebar h1 a {
+    text-decoration: none;
+    color: inherit;
+}
+
 .sidebar nav ul {
     list-style: none;
     padding: 0;
@@ -28,16 +34,27 @@
     gap: 15px;
 }
 
-.sidebar nav ul li a {
-    text-decoration: none;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #444;
-    display: block;
-    text-align: left;
+.sidebar nav ul li {
+    width: 100%;
 }
 
-.sidebar nav ul li a:hover {
+.sidebar nav ul li form {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.sidebar nav ul li button {
+    all: unset; /* 기본 버튼 스타일 제거 */
+    width: 100%;
+    color: white;
+    background-color: #444;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.sidebar nav ul li button:hover {
     background-color: #555;
 }

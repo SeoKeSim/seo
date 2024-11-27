@@ -5,6 +5,7 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @WebServlet("/AdminUserController")
 public class AdminUserController extends HttpServlet {
@@ -19,7 +20,7 @@ public class AdminUserController extends HttpServlet {
         } else if ("delete".equals(action)) {
             deleteUser(request, response); // SQLException 처리
         } else {
-            response.sendRedirect("user-management.jsp");
+            response.sendRedirect("adminPage/user-management.jsp");
         }
     }
 
@@ -43,7 +44,7 @@ public class AdminUserController extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "데이터베이스 오류가 발생했습니다. 다시 시도해주세요.");
-            request.getRequestDispatcher("user-management.jsp").forward(request, response);
+            request.getRequestDispatcher("adminPage/user-management.jsp").forward(request, response);
             return; // 오류 발생 시 이후 코드 실행 방지
         }
 
@@ -52,8 +53,17 @@ public class AdminUserController extends HttpServlet {
         } else {
             request.setAttribute("errorMessage", "사용자 정보 수정에 실패했습니다.");
         }
+        
+     // 수정 후 배열 다시 불러오기
+        try {
+            List<UserDTO> userList = uDAO.getAllUsers(); // 모든 사용자 목록 가져오기
+            request.setAttribute("userList", userList); // JSP로 전달
+        } catch (SQLException e) {
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "사용자 데이터를 불러오는 중 오류가 발생했습니다.");
+        }
 
-        request.getRequestDispatcher("user-management.jsp").forward(request, response);
+        request.getRequestDispatcher("adminPage/user-management.jsp").forward(request, response);
     }
 
     private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -67,7 +77,7 @@ public class AdminUserController extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "데이터베이스 오류가 발생했습니다. 다시 시도해주세요.");
-            request.getRequestDispatcher("user-management.jsp").forward(request, response);
+            request.getRequestDispatcher("adminPage/user-management.jsp").forward(request, response);
             return; // 오류 발생 시 이후 코드 실행 방지
         }
 
@@ -76,7 +86,40 @@ public class AdminUserController extends HttpServlet {
         } else {
             request.setAttribute("errorMessage", "사용자 삭제에 실패했습니다.");
         }
+        
+     // 수정 후 배열 다시 불러오기
+        try {
+            List<UserDTO> userList = uDAO.getAllUsers(); // 모든 사용자 목록 가져오기
+            request.setAttribute("userList", userList); // JSP로 전달
+        } catch (SQLException e) {
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "사용자 데이터를 불러오는 중 오류가 발생했습니다.");
+        }
 
-        request.getRequestDispatcher("user-management.jsp").forward(request, response);
+        request.getRequestDispatcher("adminPage/user-management.jsp").forward(request, response);
     }
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+
+        if ("viewUsers".equals(action)) {
+            viewUsers(request, response);
+        } else {
+            response.sendRedirect("admin.jsp");
+        }
+    }
+    
+    private void viewUsers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        UserDAO userDAO = new UserDAO();
+        try {
+            List<UserDTO> userList = userDAO.getAllUsers(); // 사용자 목록 가져오기
+            request.setAttribute("userList", userList); // 데이터 JSP로 전달
+            request.getRequestDispatcher("adminPage/user-management.jsp").forward(request, response);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "사용자 데이터를 불러오는 중 오류가 발생했습니다.");
+            request.getRequestDispatcher("adminPage/user-management.jsp").forward(request, response);
+        }
+    }
+    
 }

@@ -6,13 +6,16 @@
 <head>
     <meta charset="UTF-8">
     <title>사용자 관리</title>
-    <link rel="stylesheet" href="css/admin.css">
-    <link rel="stylesheet" href="css/adminsidebar.css">
+    <!-- CSS 파일 경로 확인 -->
+    <link rel="stylesheet" href="adminPage/css/admin.css">
+    <link rel="stylesheet" href="adminPage/css/adminsidebar.css">
 </head>
 <body>
+    <!-- 사이드바 포함 -->
     <%@ include file="module/adminsidebar.jsp" %>
 
-    <main>
+    <!-- 메인 콘텐츠 영역 -->
+    <main style="margin-left: 220px;"> <!-- 사이드바와 겹치지 않도록 왼쪽 마진 추가 -->
         <section id="user-management">
             <h2>사용자 관리</h2>
 
@@ -26,24 +29,25 @@
             <%
                 }
                 if (errorMessage != null) {
-            %> 
+            %>
                 <p style="color: red;"><%= errorMessage %></p>
             <%
                 }
             %>
 
+            <!-- 사용자 목록 테이블 -->
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>이름</th>
                         <th>이메일</th>
-                        <th>상태</th>
-                        <th>액션</th>
+                        <th>비밀번호</th>
+                        <th>수정 및 삭제</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <% 
+                    <%
                         List<UserDTO> userList = (List<UserDTO>) request.getAttribute("userList");
                         if (userList != null) {
                             for (UserDTO user : userList) {
