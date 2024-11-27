@@ -15,7 +15,7 @@
 
     <main>
         <section id="user-management">
-            <h2>사용자 조회 및 수정</h2>
+            <h2>사용자 관리</h2>
             <table>
                 <thead>
                     <tr>
