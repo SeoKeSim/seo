@@ -103,6 +103,17 @@ h1, h2, h3 {
     margin: 4px 0;
 }
 
+.item-details p {
+    margin: 2px 0;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.item-details p:last-child {
+    color: #ffd700;  /* Gold color for starforce */
+    font-weight: bold;
+}
+
 /* 에러 메시지 스타일 */
 .error-message {
     background-color: #ffe6e6;
