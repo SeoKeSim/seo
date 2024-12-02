@@ -9,7 +9,7 @@
             <li><a href="index.jsp">홈</a></li>
             <li><a href="char_info.jsp">캐릭터 정보</a></li>
             <li><a href="battle_info.jsp">전투력 정보</a></li>
-            <li><a href="guide.jsp">가이드</a></li>
+            <li><a href="guide2.jsp">가이드</a></li>
             <% if (mem_id == null) { %>
                 <!-- 로그인하지 않은 경우 -->
                 <li class="right"><a href="login.jsp">로그인</a></li>

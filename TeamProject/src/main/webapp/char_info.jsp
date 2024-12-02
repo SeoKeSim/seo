@@ -5,22 +5,28 @@
     JSONObject characterEquipment = (JSONObject) request.getAttribute("characterEquipment");
     String error = (String) request.getAttribute("error");
 %>
+
 <!DOCTYPE html>
 <html lang="ko">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>캐릭터 정보</title>
-        <link rel="stylesheet" href="css/char_info.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/char_info.css">
     </head>
     <body>
+    	
+    	<nav class="navigation">
+    		<a href="${pageContext.request.contextPath}/guide2.jsp" class="guide-button">가이드</a>
+		</nav>
+    	
         <h1>캐릭터 정보</h1>
 
         <div class="search-form">
-            <form action="CharacterSearchServlet" method="post">
-                <input type="text" name="characterName" placeholder="캐릭터 이름을 입력하세요">
-                <button type="submit">검색</button>
-            </form>
+            <form action="${pageContext.request.contextPath}/character" method="post">
+        		<input type="text" name="characterName" placeholder="캐릭터 이름을 입력하세요">
+        		<button type="submit">검색</button>
+    		</form>
         </div>
 
         <% if (error != null) { %>

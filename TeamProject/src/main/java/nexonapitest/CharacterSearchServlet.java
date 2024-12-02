@@ -125,7 +125,7 @@ public class CharacterSearchServlet extends HttpServlet {
         }
     }
 
-    private JSONObject getCharacterInfo(String ocid) throws Exception {
+    public JSONObject getCharacterInfo(String ocid) throws Exception {
         String apiUrlBasic = "https://open.api.nexon.com/maplestory/v1/character/basic?ocid=" + ocid;
         String apiUrlStat = "https://open.api.nexon.com/maplestory/v1/character/stat?ocid=" + ocid;
 
@@ -155,12 +155,12 @@ public class CharacterSearchServlet extends HttpServlet {
         return mergedData;
     }
 
-    private JSONObject getCharacterEquipment(String ocid) throws Exception {
+    public JSONObject getCharacterEquipment(String ocid) throws Exception {
         String apiUrlEquipment = "https://open.api.nexon.com/maplestory/v1/character/item-equipment?ocid=" + ocid;
         return fetchDataFromApi(apiUrlEquipment);
     }
     
-    private String getCharacterOcid(String characterName) throws Exception {
+    public String getCharacterOcid(String characterName) throws Exception {
         String encodedName = URLEncoder.encode(characterName, "UTF-8");
         String apiUrl = "https://open.api.nexon.com/maplestory/v1/id?character_name=" + encodedName;
         
