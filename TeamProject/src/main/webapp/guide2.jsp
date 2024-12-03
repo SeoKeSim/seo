@@ -13,8 +13,8 @@
 
     <div>
         <h2>기본 정보</h2>
-        <% 
-        MapleCharacter_DTO character = (MapleCharacter_DTO)request.getAttribute("character"); 
+        <%
+        MapleCharacter_DTO character = (MapleCharacter_DTO)session.getAttribute("character");
         if (character != null) {
         %>
             <p>이름: <%= character.getCharacterName() %></p>
@@ -37,22 +37,23 @@
                 </tr>
             </thead>
             <tbody>
-                <% 
-                List<CharacterEquipment_DTO> equipments = (List<CharacterEquipment_DTO>)request.getAttribute("equipments");
-                if (equipments != null) {
-                    for (CharacterEquipment_DTO equipment : equipments) { 
-                %>
-                    <tr>
-                        <td><%= equipment.getEquipmentType() %></td>
-                        <td><%= equipment.getEquipmentName() %></td>
-                        <td><%= equipment.getEquipmentLevel() %></td>
-                        <td><%= equipment.getEquipmentStarForce() %></td>
-                        <td><%= equipment.getPotentialGrade() %></td>
-                    </tr>
-                <% 
-                    } 
+            <%
+            List<CharacterEquipment_DTO> equipments = 
+                (List<CharacterEquipment_DTO>)session.getAttribute("equipments");
+            if (equipments != null) {
+                for (CharacterEquipment_DTO equipment : equipments) {
+            %>
+                <tr>
+                    <td><%= equipment.getEquipmentType() %></td>
+                    <td><%= equipment.getEquipmentName() %></td>
+                    <td><%= equipment.getEquipmentLevel() %></td>
+                    <td><%= equipment.getEquipmentStarForce() %></td>
+                    <td><%= equipment.getPotentialGrade() %></td>
+                </tr>
+            <%
                 }
-                %>
+            }
+            %>
             </tbody>
         </table>
     </div>
