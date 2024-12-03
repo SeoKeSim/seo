@@ -4,39 +4,39 @@
         "final_stat": [
             {
                 "stat_name": "최소 스탯공격력",
-                "stat_value": "237818101"
+                "stat_value": "45448354"
             },
             {
                 "stat_name": "최대 스탯공격력",
-                "stat_value": "264242333"
+                "stat_value": "50498169"
             },
             {
                 "stat_name": "데미지",
-                "stat_value": "101.00"
+                "stat_value": "66.00"
             },
             {
                 "stat_name": "보스 몬스터 데미지",
-                "stat_value": "582.00"
+                "stat_value": "467.00"
             },
             {
                 "stat_name": "최종 데미지",
-                "stat_value": "67.31"
+                "stat_value": "100.20"
             },
             {
                 "stat_name": "방어율 무시",
-                "stat_value": "97.23"
+                "stat_value": "95.94"
             },
             {
                 "stat_name": "크리티컬 확률",
-                "stat_value": "79"
+                "stat_value": "90"
             },
             {
                 "stat_name": "크리티컬 데미지",
-                "stat_value": "103.45"
+                "stat_value": "97.80"
             },
             {
                 "stat_name": "상태이상 내성",
-                "stat_value": "59"
+                "stat_value": "79"
             },
             {
                 "stat_name": "스탠스",
@@ -44,7 +44,7 @@
             },
             {
                 "stat_name": "방어력",
-                "stat_value": "99999"
+                "stat_value": "42483"
             },
             {
                 "stat_name": "이동속도",
@@ -56,43 +56,43 @@
             },
             {
                 "stat_name": "스타포스",
-                "stat_value": "424"
+                "stat_value": "292"
             },
             {
                 "stat_name": "아케인포스",
-                "stat_value": "1360"
+                "stat_value": "1350"
             },
             {
                 "stat_name": "어센틱포스",
-                "stat_value": "720"
+                "stat_value": "410"
             },
             {
                 "stat_name": "STR",
-                "stat_value": "115770"
+                "stat_value": "4310"
             },
             {
                 "stat_name": "DEX",
-                "stat_value": "13632"
+                "stat_value": "6979"
             },
             {
                 "stat_name": "INT",
-                "stat_value": "10868"
+                "stat_value": "3951"
             },
             {
                 "stat_name": "LUK",
-                "stat_value": "10083"
+                "stat_value": "54310"
             },
             {
                 "stat_name": "HP",
-                "stat_value": "95053"
+                "stat_value": "64296"
             },
             {
                 "stat_name": "MP",
-                "stat_value": "28310"
+                "stat_value": "33547"
             },
             {
                 "stat_name": "AP 배분 STR",
-                "stat_value": "1468"
+                "stat_value": "4"
             },
             {
                 "stat_name": "AP 배분 DEX",
@@ -104,27 +104,27 @@
             },
             {
                 "stat_name": "AP 배분 LUK",
-                "stat_value": "4"
+                "stat_value": "1438"
             },
             {
                 "stat_name": "AP 배분 HP",
-                "stat_value": "0"
+                "stat_value": "500"
             },
             {
                 "stat_name": "AP 배분 MP",
-                "stat_value": "0"
+                "stat_value": "550"
             },
             {
                 "stat_name": "아이템 드롭률",
-                "stat_value": "22"
+                "stat_value": "12"
             },
             {
                 "stat_name": "메소 획득량",
-                "stat_value": "14"
+                "stat_value": "4"
             },
             {
                 "stat_name": "버프 지속시간",
-                "stat_value": "75"
+                "stat_value": "43"
             },
             {
                 "stat_name": "공격 속도",
@@ -136,7 +136,7 @@
             },
             {
                 "stat_name": "재사용 대기시간 감소 (초)",
-                "stat_value": "5"
+                "stat_value": "3"
             },
             {
                 "stat_name": "재사용 대기시간 감소 (%)",
@@ -144,7 +144,7 @@
             },
             {
                 "stat_name": "재사용 대기시간 미적용",
-                "stat_value": "17"
+                "stat_value": "26"
             },
             {
                 "stat_name": "속성 내성 무시",
@@ -152,7 +152,7 @@
             },
             {
                 "stat_name": "상태이상 추가 데미지",
-                "stat_value": "8.00"
+                "stat_value": "13.00"
             },
             {
                 "stat_name": "무기 숙련도",
@@ -160,42 +160,43 @@
             },
             {
                 "stat_name": "추가 경험치 획득",
-                "stat_value": "154.00"
+                "stat_value": "41.50"
             },
             {
                 "stat_name": "공격력",
-                "stat_value": "12679"
+                "stat_value": "5213"
             },
             {
                 "stat_name": "마력",
-                "stat_value": "3093"
+                "stat_value": "1136"
             },
             {
                 "stat_name": "전투력",
-                "stat_value": "924232996"
+                "stat_value": "116552980"
             },
             {
                 "stat_name": "소환수 지속시간 증가",
                 "stat_value": "10"
             }
         ],
-        "character_class": "아델",
+        "character_class": "칼리",
         "remain_ap": 0
     },
     "basic": {
         "date": null,
-        "character_gender": "남",
-        "character_name": "아델",
-        "character_class": "아델",
-        "character_guild_name": "리더",
-        "character_date_create": "2020-01-16T00:00+09:00",
-        "character_level": 290,
-        "world_name": "스카니아",
-        "character_exp": 21372912614324,
+        "character_gender": "여",
+        "character_name": "그겜칼리",
+        "character_class": "칼리",
+        "character_guild_name": "해요",
+        "combat_power": 116552980,
+        "character_date_create": "2023-01-19T00:00+09:00",
+        "character_level": 284,
+        "world_name": "베라",
+        "character_exp": 47264604004313,
         "character_class_level": "6",
         "access_flag": "true",
-        "character_exp_rate": "7.262",
+        "character_exp_rate": "95.943",
         "liberation_quest_clear_flag": "true",
-        "character_image": "https://open.api.nexon.com/static/maplestory/character/look/OBLGBFIENHHKCBMGHGGGHNDDACNOOGIIFEPCDJFPOMKFPFLFFMDDHIMCDCLNICCPAKAMHNACKDOIOLHGIANHDBFJCIPMLLFNLFPGNCMNEEMKODHHIACGDCINCLNEJJPPGIKFHHKFHDPFCNNOKFJFNDBHDHJGBMOEBFHNIPJGAJJIAEJCBIBCBPOFNLHJLAFFNDLCHFLLLCMOGJNDNDHEILODIBBENCLMNGENJDLJAEIPIBDPILJLPPABDKDCEAGO"
+        "character_image": "https://open.api.nexon.com/static/maplestory/character/look/DJHAOBOENAPGIIMBBCNKAPJJNJOPGMNBPDHKOGFLKMDPCOJJDKCNAFMHAOFPIHIAKDACGCODACDOBEGIECAMPEPBAOPKAEEKJGJJOANABFPEEJEOGMMIAOJFAMCOCNEFOGLPLPLLPGGHJJDINADPMIKMIIKKBGJPFMAFCPANLAPNEMLCEHCHKOGPNDFDOEDPMEMDIKMDDHCAHGBGGGMBDDBDLGHADBHCMBPGHMNJAGFINGMJKHEHDMBDFLIMAGAL"
     }
 }

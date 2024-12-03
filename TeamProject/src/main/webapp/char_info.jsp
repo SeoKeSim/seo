@@ -4,6 +4,7 @@
     JSONObject characterInfo = (JSONObject) request.getAttribute("characterInfo");
     JSONObject characterEquipment = (JSONObject) request.getAttribute("characterEquipment");
     String error = (String) request.getAttribute("error");
+    String characterImage = (String) request.getAttribute("characterImage"); 
 %>
 
 <!DOCTYPE html>
@@ -41,6 +42,15 @@
             <div class="character-info">
                 <h2>캐릭터 정보</h2>
                 <div class="basic-info">
+                	<div class="character-profile">
+   						<% if (characterImage != null && !characterImage.isEmpty()) { %>
+        				<!-- 캐릭터 이미지 표시 -->
+        				<img src="<%= characterImage %>" alt="캐릭터 이미지" style="width: 200px; height: auto;">
+    					<% } else { %>
+        				<!-- 이미지가 없을 때 대체 메시지 -->
+        				<p>캐릭터 이미지를 불러올 수 없습니다.</p>
+    					<% } %>
+					</div>
                     <div class="info-item">
                         <div class="info-label">닉네임</div>
                         <div><%= basicInfo.getString("character_name") %></div>
