@@ -88,7 +88,7 @@ public class MapleCharacterDAO {
         }
     }
     
-    public void saveAccessory(Armor_DTO accessory) {
+    public void saveArmor(Armor_DTO accessory) {
         String sql = "INSERT INTO accessory (ocid, equipment_type, equipment_name, " +
                      "equipment_level, equipment_star_force, potential_grade) " +
                      "VALUES (?, ?, ?, ?, ?, ?) " +
@@ -114,7 +114,7 @@ public class MapleCharacterDAO {
         }
     }
     
-    public void saveAccessory(WeaponEmblem_DTO accessory) {
+    public void saveWeaponEmblem(WeaponEmblem_DTO accessory) {
         String sql = "INSERT INTO accessory (ocid, equipment_type, equipment_name, " +
                      "equipment_level, equipment_star_force, potential_grade) " +
                      "VALUES (?, ?, ?, ?, ?, ?) " +
@@ -139,6 +139,31 @@ public class MapleCharacterDAO {
             e.printStackTrace();
         }
     }
+    
+    public void saveEquipment(String tableName, BaseEquipmentDTO equipment) {
+        String sql = "INSERT INTO " + tableName + " (ocid, equipment_type, equipment_name, " +
+                    "equipment_level, equipment_star_force, potential_grade) " +
+                    "VALUES (?, ?, ?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE " +
+                    "equipment_level = ?, equipment_star_force = ?, potential_grade = ?";
 
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, equipment.getOcid());
+            pstmt.setString(2, equipment.getEquipmentType());
+            pstmt.setString(3, equipment.getEquipmentName());
+            pstmt.setInt(4, equipment.getEquipmentLevel());
+            pstmt.setInt(5, equipment.getEquipmentStarForce());
+            pstmt.setString(6, equipment.getPotentialGrade());
+            pstmt.setInt(7, equipment.getEquipmentLevel());
+            pstmt.setInt(8, equipment.getEquipmentStarForce());
+            pstmt.setString(9, equipment.getPotentialGrade());
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -1,6 +1,6 @@
 package nexon_data;
 
-public class WeaponEmblem_DTO {
+public class WeaponEmblem_DTO implements BaseEquipmentDTO{
     private int id;
     private String ocid;
     private String equipmentType;

@@ -1,6 +1,8 @@
 package nexon_data;
 
-public class Accessory_DTO {
+
+
+public class Accessory_DTO implements BaseEquipmentDTO{
     private int id;
     private String ocid;
     private String equipmentType;

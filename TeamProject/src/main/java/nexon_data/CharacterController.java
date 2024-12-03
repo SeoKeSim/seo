@@ -44,7 +44,60 @@ public class CharacterController extends HttpServlet {
 	 * System.out.println("파일 저장 성공: " + filePath); return "character_data/" +
 	 * fileName; } catch (Exception e) { e.printStackTrace(); return null; } }
 	 */
+   
+   //장비 분류 db저장 기능
+   private void processEquipmentByType(String ocid, JSONObject item) {
+	    String equipmentSlot = item.getString("item_equipment_slot");
+	    
+	    // 기본 데이터 설정
+	    BaseEquipmentDTO equipment = null;
+	    
+	    // 장비 종류별 분류
+	    if (isAccessory(equipmentSlot)) {
+	        equipment = new Accessory_DTO();
+	    } else if (isArmor(equipmentSlot)) {
+	        equipment = new Armor_DTO();
+	    } else if (isWeaponOrEmblem(equipmentSlot)) {
+	        equipment = new WeaponEmblem_DTO();
+	    }
 
+	    if (equipment != null) {
+	        equipment.setOcid(ocid);
+	        equipment.setEquipmentType(equipmentSlot);
+	        equipment.setEquipmentName(item.getString("item_name"));
+	        equipment.setEquipmentLevel(item.optInt("scroll_upgrade", 0));
+	        equipment.setEquipmentStarForce(item.optInt("starforce", 0));
+	        equipment.setPotentialGrade(item.optString("potential_option_grade", "없음"));
+	        
+	        // 종류별 저장
+	        saveEquipmentToDatabase(equipment);
+	    }
+	}
+
+	private boolean isAccessory(String slot) {
+	    return slot.contains("반지") || slot.contains("펜던트") || slot.contains("뱃지") || 
+	           slot.contains("귀고리") || slot.contains("훈장");
+	}
+
+	private boolean isArmor(String slot) {
+	    return slot.contains("모자") || slot.contains("상의") || slot.contains("하의") || 
+	           slot.contains("신발") || slot.contains("장갑") || slot.contains("망토");
+	}
+
+	private boolean isWeaponOrEmblem(String slot) {
+	    return slot.contains("무기") || slot.contains("보조무기") || slot.contains("엠블렘");
+	}
+
+	private void saveEquipmentToDatabase(BaseEquipmentDTO equipment) {
+	    if (equipment instanceof Accessory_DTO) {
+	        characterDAO.saveAccessory((Accessory_DTO) equipment);
+	    } else if (equipment instanceof Armor_DTO) {
+	        characterDAO.saveArmor((Armor_DTO) equipment);
+	    } else if (equipment instanceof WeaponEmblem_DTO) {
+	        characterDAO.saveWeaponEmblem((WeaponEmblem_DTO) equipment);
+	    }
+	}
+   
    // Nexon API 호출 메서드
    private JSONObject fetchDataFromApi(String apiUrl) throws Exception {
        URL url = new URL(apiUrl);
@@ -136,96 +189,107 @@ public class CharacterController extends HttpServlet {
        doGet(request, response);
    }
 
-// GET 요청 처리 (메인 로직)
-@Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-        throws ServletException, IOException {
-    request.setCharacterEncoding("UTF-8");
-    String characterName = request.getParameter("characterName");
-    System.out.println("캐릭터 이름: " + characterName);
+   //메인 기능
+   @Override
+   protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+          throws ServletException, IOException {
+      request.setCharacterEncoding("UTF-8");
+      String characterName = request.getParameter("characterName");
+      
+      if (characterName == null || characterName.trim().isEmpty()) {
+          request.setAttribute("error", "캐릭터 이름을 입력해주세요.");
+          request.getRequestDispatcher("/char_info.jsp").forward(request, response);
+          return;
+      }
 
-    if (characterName == null || characterName.trim().isEmpty()) {
-        request.setAttribute("error", "캐릭터 이름을 입력해주세요.");
-        request.getRequestDispatcher("/char_info.jsp").forward(request, response);
-        return;
-    }
+      try {
+          String ocid = getCharacterOcid(characterName);
+          
+          if (ocid != null) {
+              MapleCharacter_DTO character = new MapleCharacter_DTO();
+              character.setOcid(ocid);
+              character.setCharacterName(characterName);
+              
+              JSONObject characterInfo = getCharacterInfo(ocid);
+              
+              if (characterInfo != null && characterInfo.has("basic")) {
+                  JSONObject basicInfo = characterInfo.getJSONObject("basic");
+                  character.setCharacterLevel(basicInfo.getInt("character_level"));
+                  character.setCharacterClass(basicInfo.getString("character_class"));
+                  character.setTotalPower(basicInfo.optInt("combat_power", 0));
+                  
+                  if (characterInfo.has("character_image")) {
+                      request.setAttribute("characterImage", characterInfo.getString("character_image"));
+                  } else {
+                      request.setAttribute("characterImage", "default_image.png");
+                  }
+              }
 
-    try {
-        // OCID 조회
-        String ocid = getCharacterOcid(characterName);
-        System.out.println("OCID 조회 결과: " + ocid);
-        
-        if (ocid != null) {
-            // DTO 객체 생성 및 데이터 설정
-            MapleCharacter_DTO character = new MapleCharacter_DTO();
-            character.setOcid(ocid);
-            character.setCharacterName(characterName);
-            
-            // 캐릭터 정보 조회 및 설정
-            JSONObject characterInfo = getCharacterInfo(ocid);
-            System.out.println("캐릭터 정보 API 응답: " + characterInfo);
-            
-            if (characterInfo != null && characterInfo.has("basic")) {
-                JSONObject basicInfo = characterInfo.getJSONObject("basic");
-                character.setCharacterLevel(basicInfo.getInt("character_level"));
-                character.setCharacterClass(basicInfo.getString("character_class"));
-                character.setTotalPower(basicInfo.optInt("combat_power", 0));
-                
-                if (characterInfo.has("character_image")) {
-                    request.setAttribute("characterImage", characterInfo.getString("character_image"));
-                } else {
-                    request.setAttribute("characterImage", "default_image.png");
-                }
-            }
+              characterDAO.saveCharacterInfo(character);
 
-            // DB에 캐릭터 정보 저장
-            System.out.println("DB 저장 시도: " + character.getCharacterName());
-            characterDAO.saveCharacterInfo(character);
+              JSONObject equipmentInfo = getCharacterEquipment(ocid);
+              if (equipmentInfo != null && equipmentInfo.has("item_equipment")) {
+                  JSONArray items = equipmentInfo.getJSONArray("item_equipment");
+                  for (int i = 0; i < items.length(); i++) {
+                      JSONObject item = items.getJSONObject(i);
+                      String slot = item.getString("item_equipment_slot");
+                      
+                      BaseEquipmentDTO equipment = null;
+                      String tableName = "";
+                      
+                      if (checkAccessoryType(slot)) {
+                    	    equipment = new Accessory_DTO();
+                    	    tableName = "accessory";
+                    	} else if (checkArmorType(slot)) {
+                    	    equipment = new Armor_DTO();
+                    	    tableName = "armor";
+                    	} else if (checkWeaponType(slot)) {
+                    	    equipment = new WeaponEmblem_DTO();
+                    	    tableName = "weapon_emblem";
+                    	}
 
-            // 장비 정보 조회 및 처리
-            JSONObject equipmentInfo = getCharacterEquipment(ocid);
-            System.out.println("장비 정보 API 응답: " + equipmentInfo);
-            
-            List<CharacterEquipment_DTO> equipments = new ArrayList<>();
-            if (equipmentInfo != null && equipmentInfo.has("item_equipment")) {
-                JSONArray items = equipmentInfo.getJSONArray("item_equipment");
-                for (int i = 0; i < items.length(); i++) {
-                    JSONObject item = items.getJSONObject(i);
-                    CharacterEquipment_DTO equipment = new CharacterEquipment_DTO();
-                    equipment.setOcid(ocid);
-                    equipment.setEquipmentType(item.getString("item_equipment_slot"));
-                    equipment.setEquipmentName(item.getString("item_name"));
-                    equipment.setEquipmentLevel(item.optInt("scroll_upgrade", 0));
-                    equipment.setEquipmentStarForce(item.optInt("starforce", 0));
-                    equipment.setPotentialGrade(item.optString("potential_option_grade", "없음"));
-                    equipments.add(equipment);
-                    
-                    System.out.println("장비 저장 시도: " + equipment.getEquipmentName());
-                    characterDAO.saveCharacterEquipment(equipment);
-                }
-            }
+                      if (equipment != null) {
+                          equipment.setOcid(ocid);
+                          equipment.setEquipmentType(slot);
+                          equipment.setEquipmentName(item.getString("item_name"));
+                          equipment.setEquipmentLevel(item.optInt("scroll_upgrade", 0));
+                          equipment.setEquipmentStarForce(item.optInt("starforce", 0));
+                          equipment.setPotentialGrade(item.optString("potential_option_grade", "없음"));
+                          
+                          characterDAO.saveEquipment(tableName, equipment);
+                      }
+                  }
+              }
 
-            // JSP로 데이터 전달 (request와 session 모두 사용)
-            request.setAttribute("character", character);
-            request.setAttribute("equipments", equipments);
-            request.setAttribute("characterInfo", characterInfo);
-            request.setAttribute("characterEquipment", equipmentInfo);
-            
-            HttpSession session = request.getSession();
-            session.setAttribute("character", character);
-            session.setAttribute("equipments", equipments);
+              request.setAttribute("characterInfo", characterInfo);
+              request.setAttribute("characterEquipment", equipmentInfo);
+              
+              HttpSession session = request.getSession();
+              session.setAttribute("character", character);
 
-            // 결과 페이지로 포워딩
-            request.getRequestDispatcher("/char_info.jsp").forward(request, response);
-        } else {
-            request.setAttribute("error", "캐릭터를 찾을 수 없습니다.");
-            request.getRequestDispatcher("/char_info.jsp").forward(request, response);
-        }
-    } catch (Exception e) {
-        System.err.println("에러 발생: " + e.getMessage());
-        e.printStackTrace();
-        request.setAttribute("error", e.getMessage());
-        request.getRequestDispatcher("/char_info.jsp").forward(request, response);
-    }
-}
+              request.getRequestDispatcher("/char_info.jsp").forward(request, response);
+          } else {
+              request.setAttribute("error", "캐릭터를 찾을 수 없습니다.");
+              request.getRequestDispatcher("/char_info.jsp").forward(request, response);
+          }
+      } catch (Exception e) {
+          request.setAttribute("error", e.getMessage());
+          request.getRequestDispatcher("/char_info.jsp").forward(request, response);
+      }
+   }
+
+   private boolean checkAccessoryType(String slot) {
+	    return slot.contains("반지") || slot.contains("펜던트") || slot.contains("뱃지") || 
+	           slot.contains("귀고리") || slot.contains("훈장");
+	}
+
+	private boolean checkArmorType(String slot) {
+	    return slot.contains("모자") || slot.contains("상의") || slot.contains("하의") || 
+	           slot.contains("신발") || slot.contains("장갑") || slot.contains("망토") ||
+	           slot.contains("어깨장식");
+	}
+
+	private boolean checkWeaponType(String slot) {
+	    return slot.contains("무기") || slot.contains("보조무기") || slot.contains("엠블렘");
+	}
 }
