@@ -23,12 +23,18 @@ body {
     border-radius: 4px;
     font-weight: bold;
 }
- .character-profile img {
-        display: block;
-        margin: 0 auto;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
+.character-profile {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.character-profile img {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 100%;
+    height: auto;
+}
 .guide-button:hover {
     background-color: #45a049;
 }
