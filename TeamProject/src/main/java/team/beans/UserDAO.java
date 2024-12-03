@@ -1,11 +1,14 @@
 package team.beans;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class UserDAO {
 
-    public UserDTO UserCheck(String id) throws SQLException{
+    // 현재 사용하지 않는 메서드 (회원 정보 조회)
+    public UserDTO UserCheck(String id) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -19,18 +22,18 @@ public class UserDAO {
             rs = stmt.executeQuery();
 
             if (rs.next()) {
-            	uDTO = new UserDTO();
-            	uDTO.setId(rs.getString("id"));
-            	uDTO.setName(rs.getString("name"));
-            	uDTO.setEmail(rs.getString("email"));
+                uDTO = new UserDTO();
+                uDTO.setId(rs.getString("id"));
+                uDTO.setName(rs.getString("name"));
+                uDTO.setEmail(rs.getString("email"));
             }
         } finally {
             JDBCUtil.close(rs, stmt, conn);
         }
-
         return uDTO;
     }
- // 아이디 중복 체크 메서드
+
+    // 아이디 중복 체크 메서드
     public boolean idCheck(String id) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -50,7 +53,6 @@ public class UserDAO {
         } finally {
             JDBCUtil.close(rs, stmt, conn);
         }
-
         return isDuplicate;
     }
 
@@ -75,32 +77,76 @@ public class UserDAO {
         } finally {
             JDBCUtil.close(stmt, conn);
         }
-
         return isInserted;
     }
-   //로그인 메서드
+
+    // 로그인 메서드
     public boolean login(String id, String password) {
         Connection conn = null;
-          PreparedStatement stmt = null;
-          ResultSet rs = null;
-          boolean loginCon = false;
-          try {
-              conn = JDBCUtil.getConnection();
-              String sql = "SELECT id, password FROM users WHERE id = ? and password = ?";
-              
-              stmt = conn.prepareStatement(sql);
-              stmt.setString(1, id);
-              stmt.setString(2, password);
-              rs = stmt.executeQuery();
-              loginCon = rs.next();
-          } catch (Exception ex) {
-              System.out.println("Exception" + ex);
-          } finally {
-          JDBCUtil.close(rs, stmt, conn);
-          }
-          return loginCon;
-      }
-    //정보수정 메서드
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        boolean loginCon = false;
+
+        try {
+            conn = JDBCUtil.getConnection();
+            String sql = "SELECT id, password FROM users WHERE id = ? and password = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, id);
+            stmt.setString(2, password);
+            rs = stmt.executeQuery();
+            loginCon = rs.next();
+        } catch (Exception ex) {
+            System.out.println("Exception" + ex);
+        } finally {
+            JDBCUtil.close(rs, stmt, conn);
+        }
+        return loginCon;
+    }
+
+    // 회원 정보 수정 메서드(관리자)
+    public boolean updateUser(UserDTO user) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        boolean isUpdated = false;
+
+        try {
+            conn = JDBCUtil.getConnection();
+            String sql = "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, user.getName());
+            stmt.setString(2, user.getEmail());
+            stmt.setString(3, user.getPassword());
+            stmt.setString(4, user.getId());
+
+            int rowsAffected = stmt.executeUpdate();
+            isUpdated = (rowsAffected > 0);
+        } finally {
+            JDBCUtil.close(stmt, conn);
+        }
+        return isUpdated;
+    }
+
+    // 회원 삭제 메서드
+    public boolean deleteUser(String id) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        boolean isDeleted = false;
+
+        try {
+            conn = JDBCUtil.getConnection();
+            String sql = "DELETE FROM users WHERE id = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, id);
+
+            int rowsAffected = stmt.executeUpdate();
+            isDeleted = (rowsAffected > 0);
+        } finally {
+            JDBCUtil.close(stmt, conn);
+        }
+        return isDeleted;
+    }
+    
+    //회원정보 수정
     public boolean updateUserInfo(UserDTO user) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -124,5 +170,33 @@ public class UserDAO {
         
         return isUpdated;
     }
-}
 
+
+    //배열로 가져오기
+    public List<UserDTO> getAllUsers() throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<UserDTO> userList = new ArrayList<>();
+
+        try {
+            conn = JDBCUtil.getConnection();
+            String sql = "SELECT id, name, email, password FROM users";
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                UserDTO user = new UserDTO();
+                user.setId(rs.getString("id"));
+                user.setName(rs.getString("name"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                userList.add(user);
+            }
+        } finally {
+            JDBCUtil.close(rs, stmt, conn);
+        }
+
+        return userList;
+    }
+}

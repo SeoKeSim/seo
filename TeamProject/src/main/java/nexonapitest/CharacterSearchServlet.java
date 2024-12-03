@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 @WebServlet("/CharacterSearchServlet")
@@ -29,7 +30,8 @@ public class CharacterSearchServlet extends HttpServlet {
 	 * "D:\\rrg0916\\dong\\backend\\seo\\TeamProject"; private static final String
 	 * SAVE_DIRECTORY = "src\\main\\webapp\\character_data";
 	 */
-
+    String fullSavePath = "D:\\rrg0916\\dong\\backend\\seo\\TeamProject\\src\\main\\webapp\\character_data";
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, java.io.IOException {
@@ -37,15 +39,50 @@ public class CharacterSearchServlet extends HttpServlet {
         response.sendRedirect("char_info.jsp");
     }
 
-    private String saveCharacterInfoToJson(String characterName, JSONObject characterInfo, ServletContext context) {
+    private String saveCharacterInfoToJson(String characterName, JSONObject characterInfo) {
         try {
-            // 웹 애플리케이션의 실제 물리적 경로 얻기
-            String realPath = context.getRealPath("/characterdata");
-
+            // 웹 애플리케이션의 실제 경로 사용
+            String fullSavePath = getServletContext().getRealPath("/character_data");
+            
+            // 디렉토리가 없으면 생성
+            java.io.File directory = new java.io.File(fullSavePath);
+            if (!directory.exists()) {
+                boolean dirCreated = directory.mkdirs();
+                if (!dirCreated) {
+                    System.out.println("디렉토리 생성 실패: " + fullSavePath);
+                    return null;
+                }
+            }
+            
             // 파일명 생성
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-            String fileName = String.format("%s%s.json", characterName, timestamp);
-            String filePath = Paths.get(realPath, fileName).toString();
+            String fileName = String.format("%s_%s.json", characterName, timestamp);
+            String filePath = Paths.get(fullSavePath, fileName).toString();
+            
+            // JSON 파일 저장
+            try (FileWriter file = new FileWriter(filePath)) {
+                file.write(characterInfo.toString(4)); // JSON 내용을 들여쓰기하여 저장
+                file.flush();
+            }
+            
+            System.out.println("파일 저장 성공: " + filePath);
+            return "character_data/" + fileName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("예외 발생: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private String saveCharacterInfoToJson(String characterName, JSONObject characterInfo, ServletContext context) {
+        try {
+            // 프로젝트의 실제 경로 설정
+            String projectPath = "D:\\rrg0916\\dong\\backend\\seo\\TeamProject\\src\\main\\webapp\\character_data";
+            
+            // 파일명 생성
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+            String fileName = String.format("%s_%s.json", characterName, timestamp);
+            String filePath = Paths.get(projectPath, fileName).toString();
 
             // JSON 파일 저장
             try (FileWriter file = new FileWriter(filePath)) {
@@ -55,39 +92,12 @@ public class CharacterSearchServlet extends HttpServlet {
 
             System.out.println("파일 저장 성공: " + filePath);
             return "character_data/" + fileName;
-
+            
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("예외 발생: " + e.getMessage());
             return null;
         }
-    }
-
-    private String getCharacterOcid(String characterName) throws Exception {
-        String encodedCharacterName = URLEncoder.encode(characterName, "UTF-8").replace("+", "%20");
-        String apiUrl = "https://open.api.nexon.com/maplestory/v1/id?character_name=" + encodedCharacterName;
-
-        URL url = new URL(apiUrl);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("x-nxopen-api-key", API_KEY);
-        connection.setRequestProperty("accept", "application/json");
-
-        int responseCode = connection.getResponseCode();
-        if (responseCode == 200) {
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuilder response = new StringBuilder();
-            String line;
-
-            while ((line = in.readLine()) != null) {
-                response.append(line);
-            }
-            in.close();
-
-            JSONObject jsonResponse = new JSONObject(response.toString());
-            return jsonResponse.getString("ocid");
-        }
-        return null;
     }
 
     private JSONObject fetchDataFromApi(String apiUrl) throws Exception {
@@ -115,7 +125,7 @@ public class CharacterSearchServlet extends HttpServlet {
         }
     }
 
-    private JSONObject getCharacterInfo(String ocid) throws Exception {
+    public JSONObject getCharacterInfo(String ocid) throws Exception {
         String apiUrlBasic = "https://open.api.nexon.com/maplestory/v1/character/basic?ocid=" + ocid;
         String apiUrlStat = "https://open.api.nexon.com/maplestory/v1/character/stat?ocid=" + ocid;
 
@@ -125,6 +135,18 @@ public class CharacterSearchServlet extends HttpServlet {
         JSONObject mergedData = new JSONObject();
         if (basicInfo != null) {
             mergedData.put("basic", basicInfo);
+            
+            // 전투력 추가
+            if (statInfo != null && statInfo.has("final_stat")) {
+                JSONArray finalStats = statInfo.getJSONArray("final_stat");
+                for (int i = 0; i < finalStats.length(); i++) {
+                    JSONObject stat = finalStats.getJSONObject(i);
+                    if ("전투력".equals(stat.getString("stat_name"))) {
+                        basicInfo.put("combat_power", stat.getInt("stat_value"));
+                        break;
+                    }
+                }
+            }
         }
         if (statInfo != null) {
             mergedData.put("stat", statInfo);
@@ -133,9 +155,20 @@ public class CharacterSearchServlet extends HttpServlet {
         return mergedData;
     }
 
-    private JSONObject getCharacterEquipment(String ocid) throws Exception {
+    public JSONObject getCharacterEquipment(String ocid) throws Exception {
         String apiUrlEquipment = "https://open.api.nexon.com/maplestory/v1/character/item-equipment?ocid=" + ocid;
         return fetchDataFromApi(apiUrlEquipment);
+    }
+    
+    public String getCharacterOcid(String characterName) throws Exception {
+        String encodedName = URLEncoder.encode(characterName, "UTF-8");
+        String apiUrl = "https://open.api.nexon.com/maplestory/v1/id?character_name=" + encodedName;
+        
+        JSONObject response = fetchDataFromApi(apiUrl);
+        if (response != null && response.has("ocid")) {
+            return response.getString("ocid");
+        }
+        return null;
     }
 
     @Override

@@ -1,13 +1,6 @@
 @charset "UTF-8";
 
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    display: flex;
-}
-
-header {
+.sidebar {
     width: 200px;
     height: 100vh;
     background-color: #333;
@@ -22,12 +15,17 @@ header {
     left: 0;
 }
 
-header h1 {
+.sidebar h1 {
     font-size: 20px;
     margin-bottom: 20px;
 }
 
-header nav ul {
+.sidebar h1 a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.sidebar nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -36,32 +34,27 @@ header nav ul {
     gap: 15px;
 }
 
-header nav ul li a {
-    text-decoration: none;
+.sidebar nav ul li {
+    width: 100%;
+}
+
+.sidebar nav ul li form {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.sidebar nav ul li button {
+    all: unset; /* 기본 버튼 스타일 제거 */
+    width: 100%;
     color: white;
+    background-color: #444;
     padding: 10px;
     border-radius: 5px;
-    background-color: #444;
-    display: block;
     text-align: left;
+    cursor: pointer;
 }
 
-header nav ul li a:hover {
+.sidebar nav ul li button:hover {
     background-color: #555;
-}
-
-main {
-    margin-left: 200px;
-    padding: 20px;
-    flex-grow: 1;
-    background-color: #f9f9f9;
-    min-height: 100vh;
-}
-
-section {
-    margin-bottom: 20px;
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
