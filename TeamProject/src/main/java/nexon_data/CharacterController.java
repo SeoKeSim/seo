@@ -227,9 +227,11 @@ public class CharacterController extends HttpServlet {
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
            throws ServletException, IOException {
+       // 요청 인코딩 설정
        request.setCharacterEncoding("UTF-8");
        String characterName = request.getParameter("characterName");
        
+       // 캐릭터 이름 유효성 검사
        if (characterName == null || characterName.trim().isEmpty()) {
            request.setAttribute("error", "캐릭터 이름을 입력해주세요.");
            request.getRequestDispatcher("/char_info.jsp").forward(request, response);
@@ -237,40 +239,36 @@ public class CharacterController extends HttpServlet {
        }
 
        try {
-           // OCID 조회 시도 로깅 추가
+           // 1. OCID 조회
            System.out.println("캐릭터 OCID 조회 시도: " + characterName);
            String ocid = getCharacterOcid(characterName);
            
            if (ocid != null) {
-               System.out.println("OCID 조회 성공: " + ocid); // 로그 추가
+               // 2. 캐릭터 기본 정보 설정
+               System.out.println("OCID 조회 성공: " + ocid);
                MapleCharacter_DTO character = new MapleCharacter_DTO();
                character.setOcid(ocid);
                character.setCharacterName(characterName);
                
-               // 캐릭터 정보 조회 로깅 추가
+               // 3. 캐릭터 상세 정보 조회
                System.out.println("캐릭터 정보 조회 시도: " + ocid);
                JSONObject characterInfo = getCharacterInfo(ocid);
                
+               // 4. 기본 정보 처리
                if (characterInfo != null && characterInfo.has("basic")) {
-                   try {  // 예외 처리 블록 추가
+                   try {
                        JSONObject basicInfo = characterInfo.getJSONObject("basic");
                        character.setCharacterLevel(basicInfo.getInt("character_level"));
                        character.setCharacterClass(basicInfo.getString("character_class"));
                        character.setTotalPower(basicInfo.optInt("combat_power", 0));
                        
-                       // 저장 전 데이터 확인 로깅 추가
+                       // 디버깅 로그
                        System.out.println("저장할 캐릭터 정보:");
                        System.out.println("OCID: " + character.getOcid());
                        System.out.println("이름: " + character.getCharacterName());
                        System.out.println("레벨: " + character.getCharacterLevel());
                        System.out.println("직업: " + character.getCharacterClass());
                        System.out.println("전투력: " + character.getTotalPower());
-                       
-                       if (characterInfo.has("character_image")) {
-                           request.setAttribute("characterImage", characterInfo.getString("character_image"));
-                       } else {
-                           request.setAttribute("characterImage", "default_image.png");
-                       }
                    } catch (Exception e) {
                        System.err.println("캐릭터 기본 정보 처리 중 오류: " + e.getMessage());
                        e.printStackTrace();
@@ -278,7 +276,8 @@ public class CharacterController extends HttpServlet {
                    }
                }
 
-               try {  // DB 저장 예외 처리 추가
+               // 5. DB에 캐릭터 정보 저장
+               try {
                    System.out.println("캐릭터 정보 DB 저장 시도");
                    characterDAO.saveCharacterInfo(character);
                    System.out.println("캐릭터 정보 DB 저장 성공");
@@ -288,66 +287,41 @@ public class CharacterController extends HttpServlet {
                    throw e;
                }
 
-            // 장비 정보 처리 로깅 추가
+               // 6. 장비 정보 처리
                System.out.println("장비 정보 조회 시도");
                JSONObject equipmentInfo = getCharacterEquipment(ocid);
                if (equipmentInfo != null && equipmentInfo.has("item_equipment")) {
-                   JSONArray items = equipmentInfo.getJSONArray("item_equipment");
-                   System.out.println("조회된 장비 개수: " + items.length());
-                   
-                   for (int i = 0; i < items.length(); i++) {
-                       try {
-                           JSONObject item = items.getJSONObject(i);
-                           String slot = item.getString("item_equipment_slot");
-                           System.out.println("장비 처리 중: " + slot);
-                           
-                           BaseEquipmentDTO equipment = null;
-                           String tableName = "";
-                           
-                           if (checkAccessoryType(slot)) {
-                               equipment = new Accessory_DTO();
-                               tableName = "accessory";
-                           } else if (checkArmorType(slot)) {
-                               equipment = new Armor_DTO();
-                               tableName = "armor";
-                           } else if (checkWeaponType(slot)) {
-                               equipment = new WeaponEmblem_DTO();
-                               tableName = "weapon_emblem";
-                           }
-
-                           if (equipment != null) {
-                               equipment.setOcid(ocid);
-                               equipment.setEquipmentType(slot);
-                               equipment.setEquipmentName(item.getString("item_name"));
-                               equipment.setEquipmentLevel(item.optInt("scroll_upgrade", 0));
-                               equipment.setEquipmentStarForce(item.optInt("starforce", 0));
-                               equipment.setPotentialGrade(item.optString("potential_option_grade", "없음"));
-                               equipment.setNickname(characterName);  // 캐릭터 이름을 nickname으로 설정
-                               
-                               System.out.println("장비 저장 시도: " + equipment.getEquipmentName() + ", 캐릭터 닉네임: " + equipment.getNickname());
-                               characterDAO.saveEquipment(tableName, equipment);
-                               System.out.println("장비 저장 성공");
-                           }
-                       } catch (Exception e) {
-                           System.err.println("장비 처리 중 오류: " + e.getMessage());
-                           e.printStackTrace();
-                       }
-                   }
+                   processEquipmentInfo(equipmentInfo, ocid, characterName);
                }
 
-               request.setAttribute("characterInfo", characterInfo);
-               request.setAttribute("characterEquipment", equipmentInfo);
-               
+               // 7. 세션 및 request에 데이터 설정
                HttpSession session = request.getSession();
                session.setAttribute("character", character);
+               
+               // 8. 캐릭터 이미지 처리
+               if (characterInfo != null && characterInfo.has("character_image")) {
+                   String characterImage = characterInfo.getString("character_image");
+                   session.setAttribute("characterImage", characterImage);
+                   request.setAttribute("characterImage", characterImage);
+               } else {
+                   session.setAttribute("characterImage", "default_image.png");
+                   request.setAttribute("characterImage", "default_image.png");
+               }
 
+               // 9. request에 캐릭터 정보 설정
+               request.setAttribute("characterInfo", characterInfo);
+               request.setAttribute("characterEquipment", equipmentInfo);
+
+               // 10. JSP로 포워딩
                request.getRequestDispatcher("/char_info.jsp").forward(request, response);
            } else {
+               // 캐릭터를 찾지 못한 경우
                System.out.println("캐릭터를 찾을 수 없음: " + characterName);
                request.setAttribute("error", "캐릭터를 찾을 수 없습니다.");
                request.getRequestDispatcher("/char_info.jsp").forward(request, response);
            }
        } catch (Exception e) {
+           // 오류 처리
            System.err.println("전체 처리 중 오류 발생: " + e.getMessage());
            e.printStackTrace();
            request.setAttribute("error", e.getMessage());
@@ -355,6 +329,57 @@ public class CharacterController extends HttpServlet {
        }
    }
 
+   // 장비 정보 처리를 위한 별도 메서드
+   private void processEquipmentInfo(JSONObject equipmentInfo, String ocid, String characterName) {
+       JSONArray items = equipmentInfo.getJSONArray("item_equipment");
+       System.out.println("조회된 장비 개수: " + items.length());
+       
+       for (int i = 0; i < items.length(); i++) {
+           try {
+               JSONObject item = items.getJSONObject(i);
+               String slot = item.getString("item_equipment_slot");
+               System.out.println("장비 처리 중: " + slot);
+               
+               BaseEquipmentDTO equipment = null;
+               String tableName = "";
+               
+               // 장비 타입 결정
+               if (checkAccessoryType(slot)) {
+                   equipment = new Accessory_DTO();
+                   tableName = "accessory";
+               } else if (checkArmorType(slot)) {
+                   equipment = new Armor_DTO();
+                   tableName = "armor";
+               } else if (checkWeaponType(slot)) {
+                   equipment = new WeaponEmblem_DTO();
+                   tableName = "weapon_emblem";
+               }
+
+               // 장비 정보 저장
+               if (equipment != null) {
+                   setEquipmentInfo(equipment, item, ocid, characterName);
+                   characterDAO.saveEquipment(tableName, equipment);
+               }
+           } catch (Exception e) {
+               System.err.println("장비 처리 중 오류: " + e.getMessage());
+               e.printStackTrace();
+           }
+       }
+   }
+   
+   private void setEquipmentInfo(BaseEquipmentDTO equipment, JSONObject item, String ocid, String characterName) {
+	    equipment.setOcid(ocid);
+	    equipment.setEquipmentType(item.getString("item_equipment_slot"));
+	    equipment.setEquipmentName(item.getString("item_name"));
+	    equipment.setEquipmentLevel(item.optInt("scroll_upgrade", 0));
+	    equipment.setEquipmentStarForce(item.optInt("starforce", 0));
+	    equipment.setPotentialGrade(item.optString("potential_option_grade", "없음"));
+	    equipment.setNickname(characterName);
+	    
+	    // 디버깅을 위한 로그 추가
+	    System.out.println("장비 저장 시도: " + equipment.getEquipmentName() + ", 캐릭터 닉네임: " + equipment.getNickname());
+	}
+   
    //장비 분류
    private boolean checkAccessoryType(String slot) {
 	    return slot.contains("반지") || slot.contains("펜던트") || slot.contains("뱃지") || 

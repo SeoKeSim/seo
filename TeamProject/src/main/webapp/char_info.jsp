@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.json.JSONObject, org.json.JSONArray" %>
 <%
     JSONObject characterInfo = (JSONObject) request.getAttribute("characterInfo");
@@ -14,8 +14,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>캐릭터 정보</title>
         <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/char_info.css">
+        <link rel="stylesheet" href="css/headermain.css">
     </head>
     <body>
+    	<%@include file="module/header_no_contentType.jsp" %> <!-- 헤더 -->
     	
 		<nav class="navigation">
 		    <a href="${pageContext.request.contextPath}/guide" class="guide-button">가이드</a>
