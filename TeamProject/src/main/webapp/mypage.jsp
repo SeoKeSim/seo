@@ -29,7 +29,7 @@
             <div class="mypage-links">
                 <h3>서비스</h3>
                 <ul>
-                    <li><a href="contact.jsp">문의하기</a></li>
+                    <li><a href="QnA.jsp">문의하기</a></li>
                     <li><a href="favorites.jsp">즐겨찾기</a></li>
                     <li><a href="update-info.jsp">회원 정보 수정</a></li>
                 </ul>

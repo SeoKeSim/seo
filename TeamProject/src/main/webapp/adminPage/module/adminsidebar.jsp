@@ -13,7 +13,7 @@
 
             <!-- 문의 확인 -->
             <li>
-                <form action="<%= request.getContextPath() %>/adminPage/QnA.jsp" method="get">
+                <form action="<%= request.getContextPath() %>/adminPage/adminQnA.jsp" method="get">
                     <button type="submit">문의 확인</button>
                 </form>
             </li>
