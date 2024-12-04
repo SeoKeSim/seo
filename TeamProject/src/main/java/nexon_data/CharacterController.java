@@ -99,76 +99,110 @@ public class CharacterController extends HttpServlet {
 	}
    
    // Nexon API 호출 메서드
-   private JSONObject fetchDataFromApi(String apiUrl) throws Exception {
-       URL url = new URL(apiUrl);
-       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-       connection.setRequestMethod("GET");
-       connection.setRequestProperty("x-nxopen-api-key", API_KEY);
-       connection.setRequestProperty("accept", "application/json");
+	private JSONObject fetchDataFromApi(String apiUrl) throws Exception {
+	    System.out.println("API 호출 시작: " + apiUrl);
+	    
+	    URL url = new URL(apiUrl);
+	    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	    connection.setRequestMethod("GET");
+	    connection.setRequestProperty("x-nxopen-api-key", API_KEY);
+	    connection.setRequestProperty("accept", "application/json");
 
-       System.out.println("API 요청: " + apiUrl);
-       int responseCode = connection.getResponseCode();
-       System.out.println("응답 코드: " + responseCode);
+	    int responseCode = connection.getResponseCode();
+	    System.out.println("API 응답 코드: " + responseCode);
 
-       if (responseCode == 200) {
-           try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-               StringBuilder response = new StringBuilder();
-               String line;
-               while ((line = in.readLine()) != null) {
-                   response.append(line);
-               }
-               String responseData = response.toString();
-               System.out.println("API 응답: " + responseData);
-               return new JSONObject(responseData);
-           }
-       } else {
-           try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()))) {
-               StringBuilder error = new StringBuilder();
-               String line;
-               while ((line = in.readLine()) != null) {
-                   error.append(line);
-               }
-               System.out.println("API 에러: " + error.toString());
-           }
-       }
-       return null;
-   }
+	    StringBuilder response = new StringBuilder();
+	    
+	    // 성공적인 응답 처리 (200)
+	    if (responseCode == HttpURLConnection.HTTP_OK) {
+	        try (BufferedReader in = new BufferedReader(
+	                new InputStreamReader(connection.getInputStream(), "UTF-8"))) {
+	            String line;
+	            while ((line = in.readLine()) != null) {
+	                response.append(line);
+	            }
+	            String responseData = response.toString();
+	            System.out.println("API 응답 데이터: " + responseData);
+	            
+	            if (responseData.trim().isEmpty()) {
+	                System.err.println("빈 응답 데이터 수신");
+	                return null;
+	            }
+	            
+	            try {
+	                return new JSONObject(responseData);
+	            } catch (JSONException e) {
+	                System.err.println("JSON 파싱 오류: " + e.getMessage());
+	                throw new RuntimeException("API 응답을 JSON으로 파싱할 수 없습니다", e);
+	            }
+	        }
+	    } 
+	    // 에러 응답 처리
+	    else {
+	        try (BufferedReader in = new BufferedReader(
+	                new InputStreamReader(connection.getErrorStream(), "UTF-8"))) {
+	            String line;
+	            while ((line = in.readLine()) != null) {
+	                response.append(line);
+	            }
+	            String errorMsg = response.toString();
+	            System.err.println("API 에러 응답: " + errorMsg);
+	            throw new RuntimeException("API 호출 실패 - HTTP 에러 코드: " + responseCode + ", 메시지: " + errorMsg);
+	        }
+	    }
+	}
 
-   // 캐릭터 기본 정보 조회
-   private JSONObject getCharacterInfo(String ocid) throws Exception {
-       JSONObject basicInfo = fetchDataFromApi("https://open.api.nexon.com/maplestory/v1/character/basic?ocid=" + ocid);
-       JSONObject statInfo = fetchDataFromApi("https://open.api.nexon.com/maplestory/v1/character/stat?ocid=" + ocid);
-      
-       
-       JSONObject mergedData = new JSONObject();
-       if (basicInfo != null) {
-           mergedData.put("basic", basicInfo);
-           if (statInfo != null && statInfo.has("final_stat")) {
-               JSONArray finalStats = statInfo.getJSONArray("final_stat");
-               for (int i = 0; i < finalStats.length(); i++) {
-                   JSONObject stat = finalStats.getJSONObject(i);
-                   if ("전투력".equals(stat.getString("stat_name"))) {
-                       basicInfo.put("combat_power", stat.getInt("stat_value"));
-                       break;
-                   }
-               }
-           }
-           
-           // 캐릭터 이미지 추가
-           if (basicInfo.has("character_image")) {
-               String characterImage = basicInfo.getString("character_image");
-               System.out.println("API에서 반환된 캐릭터 이미지: " + characterImage);
-               mergedData.put("character_image", characterImage);
-           } else {
-               System.out.println("캐릭터 이미지가 없습니다.");
-               mergedData.put("character_image", "default_image.png");
-           }
-       }
-       if (statInfo != null) {
-           mergedData.put("stat", statInfo);
-       }
-       return mergedData;
-   }
+
+	// 캐릭터 기본 정보 조회
+	private JSONObject getCharacterInfo(String ocid) throws Exception {
+	    try {
+	        System.out.println("캐릭터 기본 정보 API 호출 시작 - OCID: " + ocid);
+	        
+	        JSONObject mergedData = new JSONObject();
+	        
+	        // 기본 정보 API 호출
+	        JSONObject basicInfo = fetchDataFromApi("https://open.api.nexon.com/maplestory/v1/character/basic?ocid=" + ocid);
+	        if (basicInfo != null) {
+	            System.out.println("기본 정보 처리 시작");
+	            JSONObject basicData = new JSONObject();
+	            basicData.put("character_level", basicInfo.optInt("character_level", 0));
+	            basicData.put("character_class", basicInfo.optString("character_class", ""));
+	            basicData.put("character_name", basicInfo.optString("character_name", ""));
+	            basicData.put("world_name", basicInfo.optString("world_name", ""));
+	            mergedData.put("basic", basicData);
+	            
+	            if (basicInfo.has("character_image")) {
+	                String characterImage = basicInfo.getString("character_image");
+	                System.out.println("캐릭터 이미지 URL: " + characterImage);
+	                mergedData.put("character_image", characterImage);
+	            }
+	        }
+	        
+	        // 스탯 정보 API 호출
+	        JSONObject statInfo = fetchDataFromApi("https://open.api.nexon.com/maplestory/v1/character/stat?ocid=" + ocid);
+	        if (statInfo != null && statInfo.has("final_stat")) {
+	            System.out.println("스탯 정보 처리 시작");
+	            JSONArray finalStats = statInfo.getJSONArray("final_stat");
+	            for (int i = 0; i < finalStats.length(); i++) {
+	                JSONObject stat = finalStats.getJSONObject(i);
+	                if ("전투력".equals(stat.optString("stat_name"))) {
+	                    mergedData.getJSONObject("basic").put("combat_power", stat.optInt("stat_value", 0));
+	                    System.out.println("전투력 추출 완료: " + stat.optInt("stat_value", 0));
+	                    break;
+	                }
+	            }
+	            mergedData.put("stat", statInfo);
+	        }
+	        
+	        System.out.println("최종 병합된 데이터 크기: " + mergedData.toString().length());
+	        return mergedData;
+	        
+	    } catch (Exception e) {
+	        System.err.println("캐릭터 정보 조회 중 오류 발생: " + e.getMessage());
+	        e.printStackTrace();
+	        throw new RuntimeException("캐릭터 정보 조회 실패", e);
+	    }
+	}
 
    // 캐릭터 장비 정보 조회
    private JSONObject getCharacterEquipment(String ocid) throws Exception {
@@ -189,95 +223,139 @@ public class CharacterController extends HttpServlet {
        doGet(request, response);
    }
 
-   //메인 기능
+   
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-          throws ServletException, IOException {
-      request.setCharacterEncoding("UTF-8");
-      String characterName = request.getParameter("characterName");
-      
-      if (characterName == null || characterName.trim().isEmpty()) {
-          request.setAttribute("error", "캐릭터 이름을 입력해주세요.");
-          request.getRequestDispatcher("/char_info.jsp").forward(request, response);
-          return;
-      }
+           throws ServletException, IOException {
+       request.setCharacterEncoding("UTF-8");
+       String characterName = request.getParameter("characterName");
+       
+       if (characterName == null || characterName.trim().isEmpty()) {
+           request.setAttribute("error", "캐릭터 이름을 입력해주세요.");
+           request.getRequestDispatcher("/char_info.jsp").forward(request, response);
+           return;
+       }
 
-      try {
-          String ocid = getCharacterOcid(characterName);
-          
-          if (ocid != null) {
-              MapleCharacter_DTO character = new MapleCharacter_DTO();
-              character.setOcid(ocid);
-              character.setCharacterName(characterName);
-              
-              JSONObject characterInfo = getCharacterInfo(ocid);
-              
-              if (characterInfo != null && characterInfo.has("basic")) {
-                  JSONObject basicInfo = characterInfo.getJSONObject("basic");
-                  character.setCharacterLevel(basicInfo.getInt("character_level"));
-                  character.setCharacterClass(basicInfo.getString("character_class"));
-                  character.setTotalPower(basicInfo.optInt("combat_power", 0));
-                  
-                  if (characterInfo.has("character_image")) {
-                      request.setAttribute("characterImage", characterInfo.getString("character_image"));
-                  } else {
-                      request.setAttribute("characterImage", "default_image.png");
-                  }
-              }
+       try {
+           // OCID 조회 시도 로깅 추가
+           System.out.println("캐릭터 OCID 조회 시도: " + characterName);
+           String ocid = getCharacterOcid(characterName);
+           
+           if (ocid != null) {
+               System.out.println("OCID 조회 성공: " + ocid); // 로그 추가
+               MapleCharacter_DTO character = new MapleCharacter_DTO();
+               character.setOcid(ocid);
+               character.setCharacterName(characterName);
+               
+               // 캐릭터 정보 조회 로깅 추가
+               System.out.println("캐릭터 정보 조회 시도: " + ocid);
+               JSONObject characterInfo = getCharacterInfo(ocid);
+               
+               if (characterInfo != null && characterInfo.has("basic")) {
+                   try {  // 예외 처리 블록 추가
+                       JSONObject basicInfo = characterInfo.getJSONObject("basic");
+                       character.setCharacterLevel(basicInfo.getInt("character_level"));
+                       character.setCharacterClass(basicInfo.getString("character_class"));
+                       character.setTotalPower(basicInfo.optInt("combat_power", 0));
+                       
+                       // 저장 전 데이터 확인 로깅 추가
+                       System.out.println("저장할 캐릭터 정보:");
+                       System.out.println("OCID: " + character.getOcid());
+                       System.out.println("이름: " + character.getCharacterName());
+                       System.out.println("레벨: " + character.getCharacterLevel());
+                       System.out.println("직업: " + character.getCharacterClass());
+                       System.out.println("전투력: " + character.getTotalPower());
+                       
+                       if (characterInfo.has("character_image")) {
+                           request.setAttribute("characterImage", characterInfo.getString("character_image"));
+                       } else {
+                           request.setAttribute("characterImage", "default_image.png");
+                       }
+                   } catch (Exception e) {
+                       System.err.println("캐릭터 기본 정보 처리 중 오류: " + e.getMessage());
+                       e.printStackTrace();
+                       throw e;
+                   }
+               }
 
-              characterDAO.saveCharacterInfo(character);
+               try {  // DB 저장 예외 처리 추가
+                   System.out.println("캐릭터 정보 DB 저장 시도");
+                   characterDAO.saveCharacterInfo(character);
+                   System.out.println("캐릭터 정보 DB 저장 성공");
+               } catch (Exception e) {
+                   System.err.println("캐릭터 정보 DB 저장 실패: " + e.getMessage());
+                   e.printStackTrace();
+                   throw e;
+               }
 
-              JSONObject equipmentInfo = getCharacterEquipment(ocid);
-              if (equipmentInfo != null && equipmentInfo.has("item_equipment")) {
-                  JSONArray items = equipmentInfo.getJSONArray("item_equipment");
-                  for (int i = 0; i < items.length(); i++) {
-                      JSONObject item = items.getJSONObject(i);
-                      String slot = item.getString("item_equipment_slot");
-                      
-                      BaseEquipmentDTO equipment = null;
-                      String tableName = "";
-                      
-                      if (checkAccessoryType(slot)) {
-                    	    equipment = new Accessory_DTO();
-                    	    tableName = "accessory";
-                    	} else if (checkArmorType(slot)) {
-                    	    equipment = new Armor_DTO();
-                    	    tableName = "armor";
-                    	} else if (checkWeaponType(slot)) {
-                    	    equipment = new WeaponEmblem_DTO();
-                    	    tableName = "weapon_emblem";
-                    	}
+            // 장비 정보 처리 로깅 추가
+               System.out.println("장비 정보 조회 시도");
+               JSONObject equipmentInfo = getCharacterEquipment(ocid);
+               if (equipmentInfo != null && equipmentInfo.has("item_equipment")) {
+                   JSONArray items = equipmentInfo.getJSONArray("item_equipment");
+                   System.out.println("조회된 장비 개수: " + items.length());
+                   
+                   for (int i = 0; i < items.length(); i++) {
+                       try {
+                           JSONObject item = items.getJSONObject(i);
+                           String slot = item.getString("item_equipment_slot");
+                           System.out.println("장비 처리 중: " + slot);
+                           
+                           BaseEquipmentDTO equipment = null;
+                           String tableName = "";
+                           
+                           if (checkAccessoryType(slot)) {
+                               equipment = new Accessory_DTO();
+                               tableName = "accessory";
+                           } else if (checkArmorType(slot)) {
+                               equipment = new Armor_DTO();
+                               tableName = "armor";
+                           } else if (checkWeaponType(slot)) {
+                               equipment = new WeaponEmblem_DTO();
+                               tableName = "weapon_emblem";
+                           }
 
-                      if (equipment != null) {
-                          equipment.setOcid(ocid);
-                          equipment.setEquipmentType(slot);
-                          equipment.setEquipmentName(item.getString("item_name"));
-                          equipment.setEquipmentLevel(item.optInt("scroll_upgrade", 0));
-                          equipment.setEquipmentStarForce(item.optInt("starforce", 0));
-                          equipment.setPotentialGrade(item.optString("potential_option_grade", "없음"));
-                          
-                          characterDAO.saveEquipment(tableName, equipment);
-                      }
-                  }
-              }
+                           if (equipment != null) {
+                               equipment.setOcid(ocid);
+                               equipment.setEquipmentType(slot);
+                               equipment.setEquipmentName(item.getString("item_name"));
+                               equipment.setEquipmentLevel(item.optInt("scroll_upgrade", 0));
+                               equipment.setEquipmentStarForce(item.optInt("starforce", 0));
+                               equipment.setPotentialGrade(item.optString("potential_option_grade", "없음"));
+                               equipment.setNickname(characterName);  // 캐릭터 이름을 nickname으로 설정
+                               
+                               System.out.println("장비 저장 시도: " + equipment.getEquipmentName() + ", 캐릭터 닉네임: " + equipment.getNickname());
+                               characterDAO.saveEquipment(tableName, equipment);
+                               System.out.println("장비 저장 성공");
+                           }
+                       } catch (Exception e) {
+                           System.err.println("장비 처리 중 오류: " + e.getMessage());
+                           e.printStackTrace();
+                       }
+                   }
+               }
 
-              request.setAttribute("characterInfo", characterInfo);
-              request.setAttribute("characterEquipment", equipmentInfo);
-              
-              HttpSession session = request.getSession();
-              session.setAttribute("character", character);
+               request.setAttribute("characterInfo", characterInfo);
+               request.setAttribute("characterEquipment", equipmentInfo);
+               
+               HttpSession session = request.getSession();
+               session.setAttribute("character", character);
 
-              request.getRequestDispatcher("/char_info.jsp").forward(request, response);
-          } else {
-              request.setAttribute("error", "캐릭터를 찾을 수 없습니다.");
-              request.getRequestDispatcher("/char_info.jsp").forward(request, response);
-          }
-      } catch (Exception e) {
-          request.setAttribute("error", e.getMessage());
-          request.getRequestDispatcher("/char_info.jsp").forward(request, response);
-      }
+               request.getRequestDispatcher("/char_info.jsp").forward(request, response);
+           } else {
+               System.out.println("캐릭터를 찾을 수 없음: " + characterName);
+               request.setAttribute("error", "캐릭터를 찾을 수 없습니다.");
+               request.getRequestDispatcher("/char_info.jsp").forward(request, response);
+           }
+       } catch (Exception e) {
+           System.err.println("전체 처리 중 오류 발생: " + e.getMessage());
+           e.printStackTrace();
+           request.setAttribute("error", e.getMessage());
+           request.getRequestDispatcher("/char_info.jsp").forward(request, response);
+       }
    }
 
+   //장비 분류
    private boolean checkAccessoryType(String slot) {
 	    return slot.contains("반지") || slot.contains("펜던트") || slot.contains("뱃지") || 
 	           slot.contains("귀고리") || slot.contains("훈장");

@@ -5,30 +5,47 @@ import nexon_data.MapleCharacter_DTO;
 import nexon_data.CharacterEquipment_DTO;
 
 public class MapleCharacterDAO {
-    public void saveCharacterInfo(MapleCharacter_DTO character) {
-        String sql = "INSERT INTO maple_character (ocid, character_name, character_level, character_class, total_power) " +
-                    "VALUES (?, ?, ?, ?, ?) " +
-                    "ON DUPLICATE KEY UPDATE " +
-                    "character_level = ?, character_class = ?, total_power = ?";
+	
+	public void saveCharacterInfo(MapleCharacter_DTO character) {
+	    String sql = "INSERT INTO maple_character (ocid, character_name, character_level, character_class, total_power) " +
+	                "VALUES (?, ?, ?, ?, ?) " +
+	                "ON DUPLICATE KEY UPDATE " +
+	                "character_level = ?, character_class = ?, total_power = ?";
 
-        try (Connection conn = JDBCUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	    try (Connection conn = JDBCUtil.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, character.getOcid());
-            pstmt.setString(2, character.getCharacterName());
-            pstmt.setInt(3, character.getCharacterLevel());
-            pstmt.setString(4, character.getCharacterClass());
-            pstmt.setInt(5, character.getTotalPower());
-            // UPDATE 구문을 위한 파라미터
-            pstmt.setInt(6, character.getCharacterLevel());
-            pstmt.setString(7, character.getCharacterClass());
-            pstmt.setInt(8, character.getTotalPower());
+	        // SQL 실행 전 파라미터 로깅
+	        System.out.println("SQL 실행: " + sql);
+	        System.out.println("파라미터 값들:");
+	        System.out.println("1. OCID: " + character.getOcid());
+	        System.out.println("2. 캐릭터명: " + character.getCharacterName());
+	        System.out.println("3. 레벨: " + character.getCharacterLevel());
+	        System.out.println("4. 직업: " + character.getCharacterClass());
+	        System.out.println("5. 전투력: " + character.getTotalPower());
 
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+	        pstmt.setString(1, character.getOcid());
+	        pstmt.setString(2, character.getCharacterName());
+	        pstmt.setInt(3, character.getCharacterLevel());
+	        pstmt.setString(4, character.getCharacterClass());
+	        pstmt.setInt(5, character.getTotalPower());
+	        // UPDATE 구문을 위한 파라미터
+	        pstmt.setInt(6, character.getCharacterLevel());
+	        pstmt.setString(7, character.getCharacterClass());
+	        pstmt.setInt(8, character.getTotalPower());
+
+	        int result = pstmt.executeUpdate();
+	        System.out.println("DB 저장 결과: " + result + "행이 영향을 받음");
+
+	    } catch (SQLException e) {
+	        System.err.println("DB 저장 중 오류 발생:");
+	        System.err.println("에러 코드: " + e.getErrorCode());
+	        System.err.println("SQL 상태: " + e.getSQLState());
+	        System.err.println("에러 메시지: " + e.getMessage());
+	        e.printStackTrace();
+	        throw new RuntimeException("캐릭터 정보 저장 실패", e);
+	    }
+	}
 
     
 	/*
@@ -142,10 +159,10 @@ public class MapleCharacterDAO {
     
     public void saveEquipment(String tableName, BaseEquipmentDTO equipment) {
         String sql = "INSERT INTO " + tableName + " (ocid, equipment_type, equipment_name, " +
-                    "equipment_level, equipment_star_force, potential_grade) " +
-                    "VALUES (?, ?, ?, ?, ?, ?) " +
+                    "equipment_level, equipment_star_force, potential_grade, nickname) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?) " +
                     "ON DUPLICATE KEY UPDATE " +
-                    "equipment_level = ?, equipment_star_force = ?, potential_grade = ?";
+                    "equipment_level = ?, equipment_star_force = ?, potential_grade = ?, nickname = ?";
 
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -156,9 +173,11 @@ public class MapleCharacterDAO {
             pstmt.setInt(4, equipment.getEquipmentLevel());
             pstmt.setInt(5, equipment.getEquipmentStarForce());
             pstmt.setString(6, equipment.getPotentialGrade());
-            pstmt.setInt(7, equipment.getEquipmentLevel());
-            pstmt.setInt(8, equipment.getEquipmentStarForce());
-            pstmt.setString(9, equipment.getPotentialGrade());
+            pstmt.setString(7, equipment.getNickname());
+            pstmt.setInt(8, equipment.getEquipmentLevel());
+            pstmt.setInt(9, equipment.getEquipmentStarForce());
+            pstmt.setString(10, equipment.getPotentialGrade());
+            pstmt.setString(11, equipment.getNickname());
 
             pstmt.executeUpdate();
         } catch (SQLException e) {

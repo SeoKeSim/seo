@@ -8,6 +8,7 @@ public class WeaponEmblem_DTO implements BaseEquipmentDTO{
     private int equipmentLevel;
     private int equipmentStarForce;
     private String potentialGrade;
+    private String nickname;
 
     public int getId() {
         return id;
@@ -50,5 +51,11 @@ public class WeaponEmblem_DTO implements BaseEquipmentDTO{
     }
     public void setPotentialGrade(String potentialGrade) {
         this.potentialGrade = potentialGrade;
+    }
+    public String getNickname() {
+        return nickname;
+    }
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 }

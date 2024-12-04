@@ -1,7 +1,7 @@
 package nexon_data;
 
 public class CharacterEquipment_DTO {
-	
+	//미사용
 	private int id;
     private String ocid;
     private String equipmentType;

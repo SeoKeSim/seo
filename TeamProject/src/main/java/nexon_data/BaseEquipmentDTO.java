@@ -15,4 +15,6 @@ public interface BaseEquipmentDTO {
     void setEquipmentStarForce(int equipmentStarForce);
     String getPotentialGrade();
     void setPotentialGrade(String potentialGrade);
+    String getNickname();
+    void setNickname(String nickname);
 }
