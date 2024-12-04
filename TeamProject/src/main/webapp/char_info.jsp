@@ -17,8 +17,8 @@
     </head>
     <body>
     	
-    	<nav class="navigation">
-    		<a href="${pageContext.request.contextPath}/guide2.jsp" class="guide-button">가이드</a>
+		<nav class="navigation">
+		    <a href="${pageContext.request.contextPath}/guide" class="guide-button">가이드</a>
 		</nav>
     	
         <h1>캐릭터 정보</h1>

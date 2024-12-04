@@ -1,61 +1,64 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="nexon_data.MapleCharacter_DTO" %>
-<%@ page import="nexon_data.CharacterEquipment_DTO" %>
-<%@ page import="java.util.List" %>
+<%@ page import="nexon_data.BossGuideService" %>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>캐릭터 스펙 정보</title>
+    <title>보스 컨텐츠 가이드</title>
+    <link rel="stylesheet" href="css/guide2.css">
 </head>
 <body>
-    <h1>캐릭터 정보</h1>
-
-    <div>
-        <h2>기본 정보</h2>
-        <%
-        MapleCharacter_DTO character = (MapleCharacter_DTO)session.getAttribute("character");
-        if (character != null) {
-        %>
-            <p>이름: <%= character.getCharacterName() %></p>
-            <p>레벨: <%= character.getCharacterLevel() %></p>
-            <p>직업: <%= character.getCharacterClass() %></p>
-            <p>전투력: <%= character.getTotalPower() %></p>
-        <% } %>
-    </div>
-
-    <div>
-        <h2>장비 정보</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>장비 타입</th>
-                    <th>장비 이름</th>
-                    <th>장비 레벨</th>
-                    <th>스타포스</th>
-                    <th>잠재능력 등급</th>
-                </tr>
-            </thead>
-            <tbody>
+    <div class="container">
+        <div class="boss-timeline">
             <%
-            List<CharacterEquipment_DTO> equipments = 
-                (List<CharacterEquipment_DTO>)session.getAttribute("equipments");
-            if (equipments != null) {
-                for (CharacterEquipment_DTO equipment : equipments) {
+            MapleCharacter_DTO character = (MapleCharacter_DTO)session.getAttribute("character");
+            BossGuideService.BossStageData bossData = 
+                (BossGuideService.BossStageData)request.getAttribute("bossData");
+            Integer currentStage = (Integer)request.getAttribute("currentStage");
+            String characterImage = (String)request.getAttribute("characterImage");
+            
+            if(bossData != null) {
+                for(int i = 0; i < bossData.getBossImages().length; i++) {
+                    String stageClass = (i == currentStage) ? "current-stage" : "";
             %>
-                <tr>
-                    <td><%= equipment.getEquipmentType() %></td>
-                    <td><%= equipment.getEquipmentName() %></td>
-                    <td><%= equipment.getEquipmentLevel() %></td>
-                    <td><%= equipment.getEquipmentStarForce() %></td>
-                    <td><%= equipment.getPotentialGrade() %></td>
-                </tr>
+                    <div class="boss-stage">
+                        <div class="boss-image <%= stageClass %>">
+                            <img src="/TeamProject/img/boss/<%= bossData.getBossImages()[i] %>" 
+                                 alt="<%= bossData.getBossNames()[i] %>" 
+                                 title="<%= bossData.getBossNames()[i] %>">
+                        </div>
+                        <div class="boss-info">
+                            <div class="boss-description">
+                                <%= bossData.getBossDescriptions()[i] %>
+                            </div>
+                            <div class="boss-power">
+                                <%= String.format("%,d", bossData.getPowerThresholds()[i]) %> 전투력
+                            </div>
+                        </div>
+                    </div>
             <%
                 }
             }
+            
+            if(characterImage != null && !characterImage.isEmpty()) {
             %>
-            </tbody>
-        </table>
+				<div class="character-position-container">
+				    <%
+				    if(characterImage != null && !characterImage.isEmpty()) {
+				        int leftPosition = currentStage * 170; // 각 단계별 간격
+				    %>
+				        <div class="character-position" style="left: <%= leftPosition %>px">
+				            <img src="<%= characterImage %>" alt="캐릭터" class="character-image">
+				        </div>
+				    <%
+				    }
+				    %>
+				</div>
+            <%
+            }
+            %>
+        </div>
     </div>
 </body>
 </html>
