@@ -40,7 +40,30 @@ public class QnADAO {
         }
         return qnaList;
     }
-
+    
+    public List<QnADTO> getAllQnAByUserId(String userId) {
+    	  String sql = "SELECT * FROM QnA WHERE user_id = ?";
+    	  List<QnADTO> qnaList = new ArrayList<>();
+    	  try (Connection conn = JDBCUtil.getConnection();
+    	       PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    	    pstmt.setString(1, userId);  
+    	    try (ResultSet rs = pstmt.executeQuery()) {
+    	      while (rs.next()) {
+    	        QnADTO qna = new QnADTO();
+    	        qna.setUniqueId(rs.getInt("unique_id"));
+    	        qna.setUserId(rs.getString("user_id")); 
+    	        qna.setTitle(rs.getString("title"));
+    	        qna.setQuestion(rs.getString("question"));
+    	        qna.setAnswer(rs.getString("answer"));
+    	        qnaList.add(qna);
+    	      }
+    	    }
+    	  } catch (SQLException e) {
+    	    e.printStackTrace();
+    	  }
+    	  return qnaList;  
+    	}
+    
     public boolean updateAnswer(int uniqueId, String answer) {
         String sql = "UPDATE QnA SET answer = ? WHERE unique_id = ?";
         try (Connection conn = JDBCUtil.getConnection();
