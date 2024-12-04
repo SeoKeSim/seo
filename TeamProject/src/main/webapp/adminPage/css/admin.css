@@ -22,9 +22,9 @@ table {
 }
 
 table th, table td {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: left;
+    border: 1px solid #ccc !important;
+    padding: 10px !important;
+    text-align: left !important;
 }
 
 table th {
@@ -37,4 +37,14 @@ section {
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.status-pending {
+    color: red !important; /* 빨간 글씨 */
+    font-weight: bold !important;
+}
+
+.status-completed {
+    color: green !important; /* 초록 글씨 */
+    font-weight: bold !important;
 }
