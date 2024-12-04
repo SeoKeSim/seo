@@ -19,7 +19,7 @@
                 </a>
             </div> -->
             <a class="logo-section" href="index.jsp">
-            <img alt="홈페이지로고(임시)" src="MapleLogo.png">
+            <img alt="홈페이지로고(임시)" src="img/MapleLogo.png">
             </a>
             <div class="form-section">
                 <h2>로그인</h2>
