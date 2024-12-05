@@ -57,7 +57,7 @@
                if(characterImage != null && !characterImage.isEmpty()) {
            %>
                    <div class="character-position-container">
-                       <div class="character-position" style="left: <%= (currentStage * 230) + 115 %>px">
+                       <div class="character-position" style="left: <%= (currentStage * 230) + 60 %>px">
                            <img src="<%= characterImage %>" alt="캐릭터" class="character-image">
                        </div>
                    </div>
