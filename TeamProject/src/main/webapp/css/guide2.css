@@ -4,7 +4,66 @@
    max-width: 1200px;
    margin: 0 auto;
    padding: 20px;
-   position: relative; /* 추가 */
+   position: relative;
+   background-color: white; /* 추가 */
+   border-radius: 12px; /* 추가 */
+   box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 추가 */
+   overflow: hidden; /* 추가 */
+}
+
+.equipment-guide {
+    max-width: 800px;  /* 컨테이너 크기 제한 */
+    margin: 20px auto;  /* 가운데 정렬 */
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.guide-section {
+    margin-top: 20px;
+}
+
+.equipment-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);  /* 3열로 구성 */
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.equipment-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+.recommendations {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.star-force {
+    color: #FFD700;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+
+.star-force::before {
+    content: "★";  /* CSS로 별 표시 */
+    display: inline-block;
+}
+
+.potential {
+    padding: 2px 8px;
+    border-radius: 4px;
+    background-color: #e9ecef;
 }
 
 .boss-timeline {
@@ -17,19 +76,20 @@
     padding-bottom: 150px;
     background-color: #f5f5f5;
     border-radius: 12px;
-    overflow-x: auto;
-    margin-bottom: 100px;
+    overflow-x: auto; /* 가로 스크롤만 허용 */
+    overflow-y: hidden; /* 세로 스크롤 제거 */
+    margin-bottom: 40px;
     min-height: 400px;
-    width: max-content;
-    min-width: 100%;
+    width: 100%; /* 추가 */
+    white-space: nowrap; /* 추가 */
 }
 
 /* 타임라인 선 수정 */
 .timeline-line {
-    position: absolute; /* fixed에서 absolute로 변경 */
+    position: absolute;
     bottom: 80px;
-    left: 30px;
-    right: 30px;
+    left: 0;
+    width: 100%;
     height: 4px;
     background-color: #FFD700;
     z-index: 1;
@@ -59,26 +119,28 @@
 }
 
 .character-position-container {
-    position: absolute; /* fixed에서 absolute로 변경 */
+    position: absolute;
     bottom: 70px;
-    left: 30px;
-    right: 30px;
+    left: 0;
+    width: 100%;
     height: 120px;
     z-index: 100;
     pointer-events: none;
 }
 
+/* 보스 스테이지 영역 */
 .boss-stage {
-   position: relative;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   min-width: 200px;
-   height: 350px;
-   padding: 15px;
-   background-color: white;
-   border-radius: 8px;
-   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    flex-shrink: 0; /* 추가: 크기 고정 */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 200px;
+    height: 350px;
+    padding: 15px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .boss-stage:not(:last-child)::after {
@@ -151,12 +213,13 @@
 .character-position {
     position: absolute;
     bottom: 0;
+    transform: translateX(-50%); /* 캐릭터 이미지의 중앙을 기준점으로 */
     transition: left 0.5s ease;
 }
 
 .character-image {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     object-fit: contain;
 }
 

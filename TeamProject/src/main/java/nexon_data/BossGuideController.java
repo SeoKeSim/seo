@@ -1,6 +1,8 @@
 package nexon_data;
 
 import java.io.IOException;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,10 +13,13 @@ import javax.servlet.http.HttpSession;
 @WebServlet("/guide")
 public class BossGuideController extends HttpServlet {
     private BossGuideService bossGuideService;
+    private MapleCharacterDAO characterDAO;
+    
     
     @Override
     public void init() throws ServletException {
         bossGuideService = new BossGuideService();
+        characterDAO = new MapleCharacterDAO();
     }
     
     @Override
@@ -39,9 +44,14 @@ public class BossGuideController extends HttpServlet {
                 characterImage = (String)session.getAttribute("characterImage");
             }
             
+            Map<String, MapleCharacterDAO.EquipmentStats> equipments = 
+                    characterDAO.getCharacterEquipments(character.getCharacterName());
+            
             request.setAttribute("bossData", bossData);
             request.setAttribute("currentStage", currentStage);
             request.setAttribute("characterImage", characterImage);
+            request.setAttribute("equipments", equipments);  // 추가
+            request.setAttribute("characterDAO", characterDAO);  // 추가
             
             System.out.println("Current Stage: " + currentStage);
             System.out.println("Total Power: " + character.getTotalPower());
