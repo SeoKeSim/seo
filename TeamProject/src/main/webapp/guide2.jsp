@@ -3,22 +3,26 @@
 <%@ page import="nexon_data.BossGuideService" %>
 <%@ page import="nexon_data.BossStageData" %>
 <%@ page import="nexon_data.MapleCharacterDAO" %>
+<%@ page import="nexon_data.EquipmentService" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.Map.Entry" %>
+<%@ page import="java.util.List" %>
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>보스 컨텐츠 가이드</title>
-    <link rel="stylesheet" href="css/guide2.css">
+    
     <link rel="stylesheet" href="css/headermain.css">
+    <link rel="stylesheet" href="css/guide2.css">
 </head>
 <body>
     <%@include file="module/headermain.jsp" %> <!-- 헤더 -->
 
-    <div class="container">
-        <div class="boss-timeline">
-            <!-- 타임라인 요소들 먼저 선언 -->
+<div class="container">
+    <div class="boss-timeline">
+        <div class="boss-stages-container">
+            <!-- 타임라인 선 -->
             <div class="timeline-line"></div>
             
             <!-- 타임라인 포인트들 -->
@@ -60,9 +64,9 @@
                 if(characterImage != null && !characterImage.isEmpty()) {
             %>
                     <div class="character-position-container">
-						<div class="character-position" style="left: <%= (currentStage * 250) + 295 %>px">
-						    <img src="<%= characterImage %>" alt="캐릭터" class="character-image">
-						</div>
+                        <div class="character-position" style="left: <%= (currentStage * 250) + 295 %>px">
+                            <img src="<%= characterImage %>" alt="캐릭터" class="character-image">
+                        </div>
                     </div>
             <%
                 }
@@ -70,77 +74,92 @@
             %>
         </div>
     </div>
+</div>
     
-    <!-- 장비 가이드 섹션 -->
-    <div class="equipment-guide">
-        <h2>장비 가이드</h2>
-        <%
-        if(character != null) {
-            Map<String, MapleCharacterDAO.EquipmentStats> equipments = 
-                (Map<String, MapleCharacterDAO.EquipmentStats>)request.getAttribute("equipments");
-            long totalPower = character.getTotalPower();
+<!-- 장비 가이드 섹션 -->
+<div class="equipment-guide">
+    <h2>장비 가이드</h2>
+    <%
+    if(character != null) {
+        EquipmentService.EquipmentAnalysis analysis = 
+            (EquipmentService.EquipmentAnalysis)request.getAttribute("equipmentAnalysis");
             
-            String recommendedStarforce = "";
-            String recommendedPotential = "";
-            
-            if(totalPower < 40000000) {
-                recommendedStarforce = "모든 장비 17성 이상";
-                recommendedPotential = "유니크 잠재능력";
-            } else if(totalPower < 100000000) {
-                recommendedStarforce = "모든 장비 22성 이상";
-                recommendedPotential = "레전드리 잠재능력";
-            } else if(totalPower < 150000000) {
-                recommendedStarforce = "모든 장비 22성 이상, 아케인 무기";
-                recommendedPotential = "레전드리 잠재능력(3줄)";
-            }
-            
-            if(equipments != null && !equipments.isEmpty()) {
-        %>
-                <div class="guide-section">
-                    <h3>현재 장비 현황</h3>
-                    <div class="equipment-list">
-                    <% 
-                    int totalStarforce = 0;
-                    int equipmentCount = 0;
-                    for(Map.Entry<String, MapleCharacterDAO.EquipmentStats> entry : equipments.entrySet()) {
-                        MapleCharacterDAO.EquipmentStats stats = entry.getValue();
-                        if(stats.getStarForce() > 0) {
-                            totalStarforce += stats.getStarForce();
-                            equipmentCount++;
-                        }
-                    %>
-                        <div class="equipment-item">
-                            <span class="item-type"><%= entry.getKey() %></span>
-                            <span class="star-force"><%= stats.getStarForce() %></span>
-                            <span class="potential <%= stats.getPotentialGrade().toLowerCase() %>">
-                                <%= stats.getPotentialGrade() %>
-                            </span>
-                        </div>
-                    <% } %>
+        if(analysis != null) {
+    %>
+            <div class="guide-section">
+                <!-- 무기/보조무기/엠블렘 섹션 -->
+                <div class="weapon-section">
+                    <h3>무기세트 잠재능력</h3>
+                    <div class="weapon-list">
+                        <% for(Map.Entry<String, MapleCharacterDAO.EquipmentStats> entry : 
+                               analysis.getWeaponSet().entrySet()) { %>
+                            <div class="weapon-item">
+                                <span class="item-type"><%= entry.getKey() %></span>
+                                <span class="potential <%= entry.getValue().getPotentialGrade().toLowerCase() %>">
+                                    <%= entry.getValue().getPotentialGrade() %>
+                                </span>
+                            </div>
+                        <% } %>
                     </div>
-                    
-                    <div class="recommendations">
-                        <h3>권장 사항</h3>
-                        <p class="recommendation-item">
-                            <span class="label">권장 스타포스:</span>
-                            <span class="value"><%= recommendedStarforce %></span>
-                        </p>
-                        <p class="recommendation-item">
-                            <span class="label">권장 잠재능력:</span>
-                            <span class="value"><%= recommendedPotential %></span>
-                        </p>
-                        <p class="recommendation-item">
-                            <span class="label">평균 스타포스:</span>
-                            <span class="value star-total">
-                                <%= equipmentCount > 0 ? String.format("%.1f", (double)totalStarforce / equipmentCount) : "0" %>성
-                            </span>
-                        </p>
+                    <!-- 권장사항 -->
+                    <!-- 권장사항 -->
+					<div class="recommendation">
+					    <% if (!analysis.isAllLegendary()) { %>
+					        <p>모든 무기세트를 레전더리로 만드는 것을 목표로 하세요.</p>
+					    <% } else { %>
+					        <p>잠재능력이 충분합니다. 이제 좋은 옵션을 노려보세요.</p>
+					    <% } %>
+					</div>
+                </div>
+
+                <!-- 방어구 섹션 -->
+                <div class="armor-section">
+                    <h3>방어구 스타포스</h3>
+                    <p class="avg-starforce">평균: <%= String.format("%.1f성", analysis.getArmorAvgStarforce()) %></p>
+                    <div class="recommendation">
+                        <% if (analysis.getArmorAvgStarforce() < 15) { %>
+                            <p>모든 방어구를 15성 이상으로 강화하세요.</p>
+                            <p>썬데이 이벤트 중, 10성이하 1+1 이벤트를 활용 해 보세요.</p>
+                        <% } else if (analysis.getArmorAvgStarforce() < 17) { %>
+                            <p>17성 달성을 목표로 하세요.</p>
+                            <p>썬데이 이벤트 중, 5, 10, 15성 강화시 100%성공 이벤트를 활용 해 보세요.</p>
+                            <p>여러 이벤트 보상중, 카르마 17성 스타포스 강화권을 노려보세요</p>
+                        <% } else if (analysis.getArmorAvgStarforce() < 22) { %>
+                            <p>22성 도전을 시작해보세요.</p>
+                            <p>썬데이 이벤트 중, 샤이닝 스타포스 이벤트를 노려보세요!</p>
+                            <p>여기서 부터는 구매 하는것도 좋은 방법 입니다.</p>
+                        <% } else { %>
+                            <p>충분한 스타포스입니다.</p>
+                        <% } %>
                     </div>
                 </div>
-        <%  } else { %>
-                <p class="no-equipment">장비 정보가 없습니다.</p>
-        <%  }
-        } %>
-    </div>
+
+                <!-- 장신구 섹션 -->
+                <div class="accessory-section">
+                    <h3>장신구 스타포스</h3>
+                    <p class="avg-starforce">평균: <%= String.format("%.1f성", analysis.getAccessoryAvgStarforce()) %></p>
+                    <div class="recommendation">
+                        <% if (analysis.getAccessoryAvgStarforce() < 15) { %>
+                            <p>모든 장신구를 15성 이상으로 강화하세요.</p>
+                            <p>썬데이 이벤트 중, 10성이하 1+1 이벤트를 활용 해 보세요.</p>
+                        <% } else if (analysis.getAccessoryAvgStarforce() < 17) { %>
+                            <p>17성 달성을 목표로 하세요.</p>
+                            <p>썬데이 이벤트 중, 5, 10, 15성 강화시 100%성공 이벤트를 활용 해 보세요.</p>
+                            <p>여러 이벤트 보상중, 카르마 17성 스타포스 강화권을 노려보세요</p>
+                        <% } else if (analysis.getAccessoryAvgStarforce() < 22) { %>
+                            <p>22성 도전을 시작해보세요.</p>
+                            <p>썬데이 이벤트 중, 샤이닝 스타포스 이벤트를 노려보세요!</p>
+                            <p>여기서 부터는 구매 하는것도 좋은 방법 입니다.</p>
+                        <% } else { %>
+                            <p>충분한 스타포스입니다.</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+    <%  } else { %>
+            <p class="no-equipment">장비 정보가 없습니다.</p>
+    <%  }
+    } %>
+</div>
 </body>
 </html>

@@ -297,20 +297,21 @@ public class CharacterController extends HttpServlet {
                // 7. 세션 및 request에 데이터 설정
                HttpSession session = request.getSession();
                session.setAttribute("character", character);
+               session.setAttribute("characterInfo", characterInfo);
+               session.setAttribute("characterEquipment", equipmentInfo);
                
                // 8. 캐릭터 이미지 처리
                if (characterInfo != null && characterInfo.has("character_image")) {
-                   String characterImage = characterInfo.getString("character_image");
-                   session.setAttribute("characterImage", characterImage);
-                   request.setAttribute("characterImage", characterImage);
-               } else {
-                   session.setAttribute("characterImage", "default_image.png");
-                   request.setAttribute("characterImage", "default_image.png");
-               }
+            	    String characterImage = characterInfo.getString("character_image");
+            	    session.setAttribute("characterImage", characterImage);
+            	} else {
+            	    session.setAttribute("characterImage", "default_image.png");
+            	}
 
                // 9. request에 캐릭터 정보 설정
                request.setAttribute("characterInfo", characterInfo);
                request.setAttribute("characterEquipment", equipmentInfo);
+               request.setAttribute("characterImage", session.getAttribute("characterImage"));
 
                // 10. JSP로 포워딩
                request.getRequestDispatcher("/char_info.jsp").forward(request, response);
