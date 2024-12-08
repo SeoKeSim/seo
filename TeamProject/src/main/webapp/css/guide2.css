@@ -203,6 +203,38 @@
    box-shadow: 0 0 10px rgba(255,107,107,0.3);
 }
 
+/* 보스 가이드 안내 스타일 */
+.boss-guide-info {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.guide-message {
+    text-align: center;
+}
+
+.guide-message h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.guide-message p {
+    color: #666;
+    line-height: 1.5;
+    margin: 10px 0;
+}
+
+.power-info {
+    margin-top: 15px;
+    font-weight: 600;
+    color: #444;
+}
+
+
 /* 장비 가이드 섹션 */
 .equipment-guide {
    max-width: 800px;

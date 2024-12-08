@@ -17,18 +17,68 @@
 </head>
 <body>
     <%@include file="module/headermain.jsp" %>
+    
+    <%
+    // 상단에서 모든 변수 선언
+    MapleCharacter_DTO character = (MapleCharacter_DTO)session.getAttribute("character");
+    BossStageData bossData = (BossStageData)request.getAttribute("bossData");
+    Integer currentStage = (Integer)request.getAttribute("currentStage");
+    String characterImage = (String)request.getAttribute("characterImage");
+    %>
 
     <div class="container">
         <div class="boss-timeline">
+            <!-- 보스 가이드 안내 문구 추가 -->
+            <% if(character != null) { %>
+                <div class="boss-guide-info">
+                    <div class="guide-message">
+                        <% 
+                        long characterPower = character.getTotalPower();
+                        String recommendMessage = "";
+                        if(characterPower < 3000000) {
+                            recommendMessage = "아직 본격적인 보스에 도전하기는 이른 것 같네요. 더 성장해보세요!";
+                        } else if(characterPower < 9999999) {
+                            recommendMessage = "카오스 루타비스에 도전해보세요.";
+                        } else if(characterPower < 19999999) {
+                            recommendMessage = "노말 가디언 엔젤 슬라임에게 도전해보세요!";
+                        } else if(characterPower < 29999999) {
+                            recommendMessage = "아케인 지역의 이지 보스중 절반을 잡을 수 있습니다!";
+                        } else if(characterPower < 39999999) {
+                            recommendMessage = "첫 하드보스 하드 스우에게 도전 해보세요";
+                        } else if(characterPower < 49999999) {
+                            recommendMessage = "하드 루시드와 카오스 더스크에게 도전 해보세요";
+                        } else if(characterPower < 74999999) {
+                            recommendMessage = "아케인 지역 최종 보스 검은 마법사 파티 레이드가 가능합니다!";
+                        } else if(characterPower < 89999999) {
+                            recommendMessage = "아케인 지역 모든 하드보스를 잡을수 있습니다";
+                        } else if(characterPower < 149999999) {
+                            recommendMessage = "그란디스 지역 첫 보스 노말 세렌에게 도전해보세요";
+                        } else if(characterPower < 199999999) {
+                            recommendMessage = "이지 칼로스에게 도전해 보시고 검은 마법사도 힘겹게 잡을수있습니다!";
+                        } else if(characterPower < 249999999) {
+                            recommendMessage = "하드 세렌 에게 도전해 보세요";
+                        } else if(characterPower < 299999999) {
+                            recommendMessage = "이지 카링에게 도전해 보세요";
+                        } else if(characterPower < 349999999) {
+                            recommendMessage = "노말 칼로스에게 도전해 보세요";
+                        } else if(characterPower < 499999999) {
+                            recommendMessage = "익스트림 단계에 도전 하실 수 있습니다! 익스트림 스우에게 도전해보세요";
+                        } else if(characterPower < 699999999) {
+                            recommendMessage = "현재 메이플 최상위 보스 노말 림보에게 도전 할 수있습니다!";
+                        } else {
+                            recommendMessage = "현재 메이플 최상위 보스 하드 림보에게 도전 할 수있습니다!";
+                        }
+
+                        %>
+                        <h3>보스 도전 가이드</h3>
+                        <p><%= recommendMessage %></p>
+                        <p class="power-info">현재 전투력: <%= String.format("%,d", characterPower) %></p>
+                    </div>
+                </div>
+            <% } %>
+
             <div class="boss-stages-container">
-                <% 
-                MapleCharacter_DTO character = (MapleCharacter_DTO)session.getAttribute("character");
-                BossStageData bossData = (BossStageData)request.getAttribute("bossData");
-                Integer currentStage = (Integer)request.getAttribute("currentStage");
-                String characterImage = (String)request.getAttribute("characterImage");
-                
-                if(bossData != null) {
-                %>
+                <% if(bossData != null) { %>
                     <!-- 보스 스테이지 내용 -->
                     <div class="boss-stages">
                         <%
@@ -55,12 +105,12 @@
 
                     <!-- 타임라인 요소들 -->
                     <div class="timeline-wrapper">
-				        <div class="timeline-line"></div>
-				        <% for(int i = 0; i < bossData.getBossImages().length; i++) { %>
-				            <div class="timeline-point" data-position="<%= i %>"></div>
-				            <div class="timeline-vertical-line" data-position="<%= i %>"></div>
-				        <% } %>
-				   		</div>
+                        <div class="timeline-line"></div>
+                        <% for(int i = 0; i < bossData.getBossImages().length; i++) { %>
+                            <div class="timeline-point" data-position="<%= i %>"></div>
+                            <div class="timeline-vertical-line" data-position="<%= i %>"></div>
+                        <% } %>
+                    </div>
 
                     <!-- 캐릭터 위치 -->
                     <% if(characterImage != null && !characterImage.isEmpty()) { %>
