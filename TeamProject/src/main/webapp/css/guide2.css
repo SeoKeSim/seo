@@ -1,5 +1,6 @@
 @charset "UTF-8";
 
+
 /* 컨테이너 기본 스타일 */
 .container {
    max-width: 1200px;
@@ -15,74 +16,37 @@
 .boss-timeline {
    position: relative;
    width: 100%;
-   min-height: 500px;
+   min-height: 600px;  /* 높이 증가 */
    padding: 30px;
-   padding-bottom: 150px;
    background-color: #f5f5f5;
    border-radius: 12px;
    margin-bottom: 40px;
    overflow-x: auto;
    overflow-y: hidden;
-   white-space: nowrap;
 }
 
 /* 보스 스테이지 컨테이너 */
 .boss-stages-container {
-    position: relative;
-    display: flex;
-    flex-wrap: nowrap;
-    min-width: max-content;
-    padding: 0 110px;
-    padding-bottom: 100px;  /* 여백 증가 */
-}
-
-/* 타임라인 기본 선 */
-.timeline-line {
-   position: absolute;
-   bottom: 150px;     /* top 제거 */
-   left: 30px;
-   height: 4px;
-   background-color: #FFD700;
-   z-index: 1;
-   width: calc(100% - 60px);
-}
-
-/* 타임라인 포인트 */
-.timeline-point {
-   position: absolute;
-   bottom: 146px;     /* top 제거 */
-   width: 12px;
-   height: 12px;
-   background-color: #FFD700;
-   border-radius: 50%;
-   transform: translateX(-50%);
-   z-index: 2;
-}
-
-/* 타임라인 세로선 */
-.timeline-vertical-line {
-   position: absolute;
-   bottom: 154px;     /* top 제거 */
-   width: 2px;
-   height: 20px;
-   background-color: #FFD700;
-   transform: translateX(-50%);
-   z-index: 2;
+   position: relative;
+   min-width: max-content;
+   padding: 0 110px;
+   padding-bottom: 250px;  /* 아래 여백 증가 */
+    overflow: visible;
+    width: 3500px; 
 }
 
 /* 보스 스테이지 스타일 */
 .boss-stage {
    display: inline-block;
    width: 200px;
-   margin: 0 15px;
+   margin: 0 20px;
    padding: 15px;
    background-color: white;
    border-radius: 8px;
    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
    vertical-align: top;
-   position: relative;
-   z-index: 2;
 }
+
 
 .boss-image {
    width: 180px;
@@ -117,24 +81,115 @@
    border-radius: 4px;
 }
 
+/* 타임라인 요소들 */
+.timeline-wrapper {
+   position: absolute;
+   bottom: 100px;
+   left: 0;
+   width: 100%;
+   height: 30px;
+   overflow: visible;
+}
+
+/* 타임라인 기본 선 */
+.timeline-line {
+   position: absolute;
+   bottom: 20px;  /* 위치 조정 */
+   left: 30px;
+   height: 4px;
+   background-color: #FFD700;
+   z-index: 1;
+   width: calc(100% - 60px);
+}
+
+/* 타임라인 포인트 */
+.timeline-point {
+   position: absolute;
+   bottom: 16px;  /* 위치 조정 */
+   width: 12px;
+   height: 12px;
+   background-color: #FFD700;
+   border-radius: 50%;
+   transform: translateX(-50%);
+   z-index: 2;
+}
+
+/* 타임라인 세로선 */
+.timeline-vertical-line {
+   position: absolute;
+   bottom: 24px;  /* 위치 조정 */
+   width: 2px;
+   height: 30px;
+   background-color: #FFD700;
+   transform: translateX(-50%);
+   z-index: 2;
+   display: block;
+}
+
+.timeline-point[data-position],
+.timeline-vertical-line[data-position] {
+    left: calc(230px + (var(--position) * 280px));  /* 115px에서 230px로 수정 */
+}
+
+/* 타임라인 포인트 위치 */
+.timeline-point[data-position="0"], .timeline-vertical-line[data-position="0"] { --position: 0; }
+.timeline-point[data-position="1"], .timeline-vertical-line[data-position="1"] { --position: 1; }
+.timeline-point[data-position="2"], .timeline-vertical-line[data-position="2"] { --position: 2; }
+.timeline-point[data-position="3"], .timeline-vertical-line[data-position="3"] { --position: 3; }
+.timeline-point[data-position="4"], .timeline-vertical-line[data-position="4"] { --position: 4; }
+.timeline-point[data-position="5"], .timeline-vertical-line[data-position="5"] { --position: 5; }
+.timeline-point[data-position="6"], .timeline-vertical-line[data-position="6"] { --position: 6; }
+.timeline-point[data-position="7"], .timeline-vertical-line[data-position="7"] { --position: 7; }
+.timeline-point[data-position="8"], .timeline-vertical-line[data-position="8"] { --position: 8; }
+.timeline-point[data-position="9"], .timeline-vertical-line[data-position="9"] { --position: 9; }
+.timeline-point[data-position="10"], .timeline-vertical-line[data-position="10"] { --position: 10; }
+.timeline-point[data-position="11"], .timeline-vertical-line[data-position="11"] { --position: 11; }
+.timeline-point[data-position="12"], .timeline-vertical-line[data-position="12"] { --position: 12; }
+.timeline-point[data-position="13"], .timeline-vertical-line[data-position="13"] { --position: 13; }
+.timeline-point[data-position="14"], .timeline-vertical-line[data-position="14"] { --position: 14; }
+
+
+
 /* 캐릭터 위치 관련 */
 .character-position-container {
    position: absolute;
-   bottom: 140px;
+   bottom: 150px;  /* 위치 조정 */
    left: 0;
    width: 100%;
    height: 120px;
    z-index: 100;
    pointer-events: none;
-   
 }
 
 .character-position {
    position: absolute;
    bottom: 0;
-   transform: translateX(-50%);
+/*    left: 50%;  캐릭터 중앙 정렬을 위한 기준점
+   transform: translateX(-50%);  캐릭터 중앙 정렬 */
    transition: left 0.5s ease;
 }
+
+.character-position[data-stage] {
+    left: calc(420px + (var(--stage) * 245px));  /* 295px에서 410px로 수정 */
+}
+
+/* 캐릭터 위치 값 */
+/* CSS 변수 설정을 위한 속성 */
+.character-position[data-stage="0"] { --stage: 0; }
+.character-position[data-stage="1"] { --stage: 1; }
+.character-position[data-stage="2"] { --stage: 2; }
+.character-position[data-stage="3"] { --stage: 3; }
+.character-position[data-stage="4"] { --stage: 4; }
+.character-position[data-stage="5"] { --stage: 5; }
+.character-position[data-stage="6"] { --stage: 6; }
+.character-position[data-stage="7"] { --stage: 7; }
+.character-position[data-stage="8"] { --stage: 8; }
+.character-position[data-stage="9"] { --stage: 9; }
+.character-position[data-stage="10"] { --stage: 10; }
+.character-position[data-stage="11"] { --stage: 11; }
+.character-position[data-stage="12"] { --stage: 12; }
+.character-position[data-stage="13"] { --stage: 13; }
+.character-position[data-stage="14"] { --stage: 14; }
 
 .character-image {
    width: 100px;
