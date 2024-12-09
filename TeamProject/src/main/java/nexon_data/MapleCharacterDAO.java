@@ -1,6 +1,9 @@
 package nexon_data;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
+
 import nexon_data.MapleCharacter_DTO;
 import nexon_data.CharacterEquipment_DTO;
 
@@ -46,7 +49,56 @@ public class MapleCharacterDAO {
 	        throw new RuntimeException("캐릭터 정보 저장 실패", e);
 	    }
 	}
+	
+	// 캐릭터의 전체 장비 정보 조회
+	public Map<String, EquipmentStats> getCharacterEquipments(String nickname) {
+	    Map<String, EquipmentStats> equipments = new HashMap<>();
+	    
+	    // 각 테이블에서 장비 정보 조회
+	    String[] tables = {"accessory", "armor", "weapon_emblem"};
+	    
+	    for(String table : tables) {
+	        String sql = "SELECT equipment_type, equipment_level, equipment_star_force, potential_grade " +
+	                    "FROM " + table + " WHERE nickname = ?";
+	                    
+	        try (Connection conn = JDBCUtil.getConnection();
+	             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	            
+	            pstmt.setString(1, nickname);
+	            ResultSet rs = pstmt.executeQuery();
+	            
+	            while(rs.next()) {
+	                EquipmentStats stats = new EquipmentStats(
+	                    rs.getInt("equipment_level"),
+	                    rs.getInt("equipment_star_force"),
+	                    rs.getString("potential_grade")
+	                );
+	                equipments.put(rs.getString("equipment_type"), stats);
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return equipments;
+	}
 
+	// 장비 스탯을 저장하기 위한 내부 클래스
+	public class EquipmentStats {
+	    private int level;
+	    private int starForce;
+	    private String potentialGrade;
+	    
+	    public EquipmentStats(int level, int starForce, String potentialGrade) {
+	        this.level = level;
+	        this.starForce = starForce;
+	        this.potentialGrade = potentialGrade;
+	    }
+	    
+	    // getter 메서드들
+	    public int getLevel() { return level; }
+	    public int getStarForce() { return starForce; }
+	    public String getPotentialGrade() { return potentialGrade; }
+	}
     
 	/*
 	 * public void saveCharacterEquipment(CharacterEquipment_DTO equipment) { String
