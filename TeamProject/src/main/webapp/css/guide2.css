@@ -170,7 +170,7 @@
 }
 
 .character-position[data-stage] {
-    left: calc(420px + (var(--stage) * 245px));  /* 295px에서 410px로 수정 */
+    left: calc(420px + (var(--stage) * 260px));  /* 295px에서 410px로 수정 */
 }
 
 /* 캐릭터 위치 값 */
