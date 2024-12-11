@@ -1,4 +1,4 @@
-\<%@page import="team.beans.InquiryHistoryDAO"%>
+<%@page import="team.beans.InquiryHistoryDAO"%>
 <%@page import="team.beans.QnADAO"%>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
@@ -11,8 +11,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>문의 내역</title>
     <link rel="stylesheet" href="css/inquiryHistory.css">
+    <link rel="stylesheet" href="css/headermain.css">
 </head>
 <body>
+	<%@include file="module/headermain.jsp" %>
+	
     <div class="inquiry-container">
         <h2>문의 내역</h2>
 

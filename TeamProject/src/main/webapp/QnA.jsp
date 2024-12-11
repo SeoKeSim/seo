@@ -9,9 +9,10 @@
     <title>문의하기</title>
     <link rel="stylesheet" href="css/QnA.css">
     <link rel="stylesheet" href="css/headermain.css">
+
 </head>
 <body>
-
+	<%@include file="module/headermain.jsp" %>
     <div class="contact-container"> <!-- 문의하기 컨테이너 -->
         <h2>문의하기</h2>
 
