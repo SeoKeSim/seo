@@ -1,0 +1,60 @@
+@charset "UTF-8";
+
+.sidebar {
+    width: 200px;
+    height: 100vh;
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.sidebar h1 {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.sidebar h1 a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.sidebar nav ul li {
+    width: 100%;
+}
+
+.sidebar nav ul li form {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.sidebar nav ul li button {
+    all: unset; /* 기본 버튼 스타일 제거 */
+    width: 100%;
+    color: white;
+    background-color: #444;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.sidebar nav ul li button:hover {
+    background-color: #555;
+}
