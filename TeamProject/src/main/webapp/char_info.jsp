@@ -44,6 +44,33 @@
             <div class="character-info">
                 <h2>캐릭터 정보</h2>
                 <div class="basic-info">
+                
+					<% if (session.getAttribute("idKey") != null) { %>
+						<div class="favorite-button">
+							<form action="${pageContext.request.contextPath}/favorite" method="post" id="favoriteForm">
+							    <input type="hidden" name="action" value="toggle">
+							    <input type="hidden" name="ocid" value="<%= request.getAttribute("ocid") %>">
+							    <input type="hidden" name="characterName" value="<%= basicInfo.getString("character_name") %>">
+							    <input type="hidden" name="characterImage" value="<%= characterImage %>">
+							    
+							<!-- 디버깅을 위한 JavaScript 추가 -->
+							    <script>
+							        console.log("ocid:", "<%= request.getAttribute("ocid") %>");
+							        console.log("characterName:", "<%= basicInfo.getString("character_name") %>");
+							        console.log("characterImage:", "<%= characterInfo.getString("character_image") %>");
+							    </script>							    
+							    
+							    <button type="submit" id="favoriteBtn" class="favorite">
+							        <% if (request.getAttribute("isFavorite") != null && (Boolean)request.getAttribute("isFavorite")) { %>
+							            ★ 즐겨찾기 해제
+							        <% } else { %>
+							            ☆ 즐겨찾기 추가
+							        <% } %>
+							    </button>
+							</form>	
+						</div>
+					<% } %>               	
+                	
                 	<div class="character-profile">
    						<% if (characterImage != null && !characterImage.isEmpty()) { %>
         				<!-- 캐릭터 이미지 표시 -->

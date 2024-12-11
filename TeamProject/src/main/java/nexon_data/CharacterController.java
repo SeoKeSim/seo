@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.*;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -258,6 +259,7 @@ public class CharacterController extends HttpServlet {
                if (characterInfo != null && characterInfo.has("basic")) {
                    try {
                        JSONObject basicInfo = characterInfo.getJSONObject("basic");
+                       basicInfo.put("ocid", ocid);
                        character.setCharacterLevel(basicInfo.getInt("character_level"));
                        character.setCharacterClass(basicInfo.getString("character_class"));
                        character.setTotalPower(basicInfo.optInt("combat_power", 0));
@@ -307,11 +309,27 @@ public class CharacterController extends HttpServlet {
             	} else {
             	    session.setAttribute("characterImage", "default_image.png");
             	}
+               
+            // doGet 메소드 내의 캐릭터 정보 처리 부분에 추가
+               
+               String userId = (String) session.getAttribute("idKey");
+               if (userId != null) {
+                   try {
+                       FavoritesDAO favoritesDAO = new FavoritesDAO();
+                       boolean isFavorite = favoritesDAO.isFavorite(userId, ocid);
+                       request.setAttribute("isFavorite", isFavorite);
+                       System.out.println("즐겨찾기 상태 확인: " + (isFavorite ? "추가됨" : "추가안됨"));
+                   } catch (SQLException e) {
+                       System.err.println("즐겨찾기 상태 확인 중 오류: " + e.getMessage());
+                       e.printStackTrace();
+                   }
+               }
 
                // 9. request에 캐릭터 정보 설정
                request.setAttribute("characterInfo", characterInfo);
                request.setAttribute("characterEquipment", equipmentInfo);
                request.setAttribute("characterImage", session.getAttribute("characterImage"));
+               request.setAttribute("ocid", ocid);
 
                // 10. JSP로 포워딩
                request.getRequestDispatcher("/char_info.jsp").forward(request, response);
@@ -328,6 +346,8 @@ public class CharacterController extends HttpServlet {
            request.setAttribute("error", e.getMessage());
            request.getRequestDispatcher("/char_info.jsp").forward(request, response);
        }
+       
+       
    }
 
    // 장비 정보 처리를 위한 별도 메서드
