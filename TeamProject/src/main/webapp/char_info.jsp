@@ -1,10 +1,34 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.json.JSONObject, org.json.JSONArray" %>
 <%
-    JSONObject characterInfo = (JSONObject) request.getAttribute("characterInfo");
-    JSONObject characterEquipment = (JSONObject) request.getAttribute("characterEquipment");
+    // 디버깅을 위한 로그 출력
+    System.out.println("characterInfo from request: " + request.getAttribute("characterInfo"));
+    System.out.println("characterInfo from session: " + session.getAttribute("characterInfo"));
+    
+    JSONObject characterInfo = null;
+    // request에서 먼저 확인
+    if(request.getAttribute("characterInfo") != null) {
+        characterInfo = (JSONObject) request.getAttribute("characterInfo");
+    }
+    // session에서도 확인
+    else if(session.getAttribute("characterInfo") != null) {
+        characterInfo = (JSONObject) session.getAttribute("characterInfo");
+    }
+    
+    JSONObject characterEquipment = null;
+    if(request.getAttribute("characterEquipment") != null) {
+        characterEquipment = (JSONObject) request.getAttribute("characterEquipment");
+    } else if(session.getAttribute("characterEquipment") != null) {
+        characterEquipment = (JSONObject) session.getAttribute("characterEquipment");
+    }
+    
     String error = (String) request.getAttribute("error");
-    String characterImage = (String) request.getAttribute("characterImage"); 
+    String characterImage = null;
+    if(request.getAttribute("characterImage") != null) {
+        characterImage = (String) request.getAttribute("characterImage");
+    } else if(session.getAttribute("characterImage") != null) {
+        characterImage = (String) session.getAttribute("characterImage");
+    }
 %>
 
 <!DOCTYPE html>
@@ -73,11 +97,11 @@
                 	
                 	<div class="character-profile">
    						<% if (characterImage != null && !characterImage.isEmpty()) { %>
-        				<!-- 캐릭터 이미지 표시 -->
-        				<img src="<%= characterImage %>" alt="캐릭터 이미지" style="width: 200px; height: auto;">
+        				<img src="<%= characterImage %>" alt="캐릭터 이미지" 
+                             onerror="this.onerror=null; this.src='images/default-character.png';"
+                             style="width: 200px; height: auto;">
     					<% } else { %>
-        				<!-- 이미지가 없을 때 대체 메시지 -->
-        				<p>캐릭터 이미지를 불러올 수 없습니다.</p>
+        				<p>캐릭터를 검색하시면 이미지가 표시됩니다.</p>
     					<% } %>
 					</div>
                     <div class="info-item">
@@ -101,6 +125,10 @@
     					<% } %>
 					</div>
                 </div>
+            </div>
+        <% } else { %>
+            <div class="message">
+                캐릭터를 검색하시면 정보가 표시됩니다.
             </div>
         <% } %>
 
@@ -135,8 +163,6 @@
                     <% } %>
                 </div>
             </div>
-        <% } else { %>
-            <p>장비 데이터를 불러올 수 없습니다.</p>
         <% } %>
     </body>
 </html>

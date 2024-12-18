@@ -230,11 +230,18 @@ public class CharacterController extends HttpServlet {
            throws ServletException, IOException {
        // 요청 인코딩 설정
        request.setCharacterEncoding("UTF-8");
+       
+       HttpSession session = request.getSession();
+       String idKey = (String) session.getAttribute("idKey");
+       
        String characterName = request.getParameter("characterName");
        
        // 캐릭터 이름 유효성 검사
        if (characterName == null || characterName.trim().isEmpty()) {
-           request.setAttribute("error", "캐릭터 이름을 입력해주세요.");
+           // 세션 유지하면서 페이지로 이동
+           if (idKey != null) {
+               session.setAttribute("idKey", idKey);
+           }
            request.getRequestDispatcher("/char_info.jsp").forward(request, response);
            return;
        }
@@ -297,10 +304,23 @@ public class CharacterController extends HttpServlet {
                }
 
                // 7. 세션 및 request에 데이터 설정
-               HttpSession session = request.getSession();
+               // 새로운 세션 생성 전에 기존 idKey 값 유지
                session.setAttribute("character", character);
                session.setAttribute("characterInfo", characterInfo);
                session.setAttribute("characterEquipment", equipmentInfo);
+               if (idKey != null) {
+                   session.setAttribute("idKey", idKey); // 기존 idKey 복원
+                   
+                   try {
+                       FavoritesDAO favoritesDAO = new FavoritesDAO();
+                       boolean isFavorite = favoritesDAO.isFavorite(idKey, ocid); // idKey 사용
+                       request.setAttribute("isFavorite", isFavorite);
+                       System.out.println("즐겨찾기 상태 확인: " + (isFavorite ? "추가됨" : "추가안됨"));
+                   } catch (SQLException e) {
+                       System.err.println("즐겨찾기 상태 확인 중 오류: " + e.getMessage());
+                       e.printStackTrace();
+                   }
+               }
                
                // 8. 캐릭터 이미지 처리
                if (characterInfo != null && characterInfo.has("character_image")) {
@@ -312,18 +332,14 @@ public class CharacterController extends HttpServlet {
                
             // doGet 메소드 내의 캐릭터 정보 처리 부분에 추가
                
-               String userId = (String) session.getAttribute("idKey");
-               if (userId != null) {
-                   try {
-                       FavoritesDAO favoritesDAO = new FavoritesDAO();
-                       boolean isFavorite = favoritesDAO.isFavorite(userId, ocid);
-                       request.setAttribute("isFavorite", isFavorite);
-                       System.out.println("즐겨찾기 상태 확인: " + (isFavorite ? "추가됨" : "추가안됨"));
-                   } catch (SQLException e) {
-                       System.err.println("즐겨찾기 상태 확인 중 오류: " + e.getMessage());
-                       e.printStackTrace();
-                   }
-               }
+			/*
+			 * String userId = (String) session.getAttribute("idKey"); if (userId != null) {
+			 * try { FavoritesDAO favoritesDAO = new FavoritesDAO(); boolean isFavorite =
+			 * favoritesDAO.isFavorite(userId, ocid); request.setAttribute("isFavorite",
+			 * isFavorite); System.out.println("즐겨찾기 상태 확인: " + (isFavorite ? "추가됨" :
+			 * "추가안됨")); } catch (SQLException e) { System.err.println("즐겨찾기 상태 확인 중 오류: " +
+			 * e.getMessage()); e.printStackTrace(); } }
+			 */
 
                // 9. request에 캐릭터 정보 설정
                request.setAttribute("characterInfo", characterInfo);
