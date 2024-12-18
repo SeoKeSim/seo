@@ -18,12 +18,7 @@
                 </form>
             </li>
 
-            <!-- 로그 확인 -->
-            <li>
-                <form action="<%= request.getContextPath() %>/adminPage/log.jsp" method="get">
-                    <button type="submit">로그 확인</button>
-                </form>
-            </li>
+            
         </ul>
     </nav>
 </aside>
